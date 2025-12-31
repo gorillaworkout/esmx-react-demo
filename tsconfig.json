@@ -9,11 +9,18 @@
       "strict": true,
       "skipLibCheck": true,
       "allowSyntheticDefaultImports": true,
-      "jsx": "react-jsx",
-      "lib": ["ESNext", "DOM"],
+      "jsx": "react-jsx",  // ✅ Penting untuk React JSX
+      "lib": ["ESNext", "DOM"],  // ✅ DOM types untuk browser
       "paths": {
         "react-demo/src/*": ["./src/*"],
-        "react-demo/*": ["./*"]
+        "react-demo/*": ["./*"],
+        "@/*": ["./src/*"],
+        "@/components/*": ["./src/components/*"],
+        "@/pages/*": ["./src/pages/*"],
+        "@/lib/*": ["./src/lib/*"],
+        "@/hooks/*": ["./src/hooks/*"],
+        "@/utils/*": ["./src/utils/*"],
+        "@/types/*": ["./src/types/*"]
       }
     },
     "include": ["src"],

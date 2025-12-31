@@ -15,9 +15,9 @@
         "src/entry.client.mjs"
     ],
     "chunks": {
-        "react-demo@../node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js": {
-            "name": "react-demo@../node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js",
-            "js": "src/entry.client.mjs",
+        "react-demo@../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js": {
+            "name": "react-demo@../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js",
+            "js": "src/entry.client.7f7c540c6a543781.hot-update.mjs",
             "css": [],
             "resources": []
         }

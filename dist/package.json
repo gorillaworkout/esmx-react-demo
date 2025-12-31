@@ -22,15 +22,10 @@
         "@types/node": "^24.0.0",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
-        "autoprefixer": "^10.4.23",
-        "class-variance-authority": "^0.7.0",
-        "clsx": "^2.1.0",
-        "lucide-react": "^0.344.0",
-        "postcss": "^8.5.6",
-        "postcss-loader": "^7.3.4",
-        "tailwind-merge": "^2.2.1",
-        "tailwindcss": "^3.4.19",
-        "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.9.3"
+    },
+    "exports": {
+        "./src/entry.client": "./client/src/entry.client.866a31e8.final.mjs",
+        "./src/entry.server": "./server/src/entry.server.6332b33c.final.mjs"
     }
 }

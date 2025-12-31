@@ -28820,6 +28820,357 @@ if (false) {} else {
 
 
 },
+"../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"(__unused_rspack_module, exports) {
+/**
+ * @license React
+ * react-refresh-runtime.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+ true &&
+  (function () {
+    function computeFullKey(signature) {
+      if (null !== signature.fullKey) return signature.fullKey;
+      var fullKey = signature.ownKey;
+      try {
+        var hooks = signature.getCustomHooks();
+      } catch (err) {
+        return (signature.forceReset = !0), (signature.fullKey = fullKey);
+      }
+      for (var i = 0; i < hooks.length; i++) {
+        var hook = hooks[i];
+        if ("function" !== typeof hook)
+          return (signature.forceReset = !0), (signature.fullKey = fullKey);
+        hook = allSignaturesByType.get(hook);
+        if (void 0 !== hook) {
+          var nestedHookKey = computeFullKey(hook);
+          hook.forceReset && (signature.forceReset = !0);
+          fullKey += "\n---\n" + nestedHookKey;
+        }
+      }
+      return (signature.fullKey = fullKey);
+    }
+    function resolveFamily(type) {
+      return updatedFamiliesByType.get(type);
+    }
+    function cloneMap(map) {
+      var clone = new Map();
+      map.forEach(function (value, key) {
+        clone.set(key, value);
+      });
+      return clone;
+    }
+    function cloneSet(set) {
+      var clone = new Set();
+      set.forEach(function (value) {
+        clone.add(value);
+      });
+      return clone;
+    }
+    function getProperty(object, property) {
+      try {
+        return object[property];
+      } catch (err) {}
+    }
+    function register(type, id) {
+      if (
+        !(
+          null === type ||
+          ("function" !== typeof type && "object" !== typeof type) ||
+          allFamiliesByType.has(type)
+        )
+      ) {
+        var family = allFamiliesByID.get(id);
+        void 0 === family
+          ? ((family = { current: type }), allFamiliesByID.set(id, family))
+          : pendingUpdates.push([family, type]);
+        allFamiliesByType.set(type, family);
+        if ("object" === typeof type && null !== type)
+          switch (getProperty(type, "$$typeof")) {
+            case REACT_FORWARD_REF_TYPE:
+              register(type.render, id + "$render");
+              break;
+            case REACT_MEMO_TYPE:
+              register(type.type, id + "$type");
+          }
+      }
+    }
+    function setSignature(type, key) {
+      var forceReset =
+          2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : !1,
+        getCustomHooks = 3 < arguments.length ? arguments[3] : void 0;
+      allSignaturesByType.has(type) ||
+        allSignaturesByType.set(type, {
+          forceReset: forceReset,
+          ownKey: key,
+          fullKey: null,
+          getCustomHooks:
+            getCustomHooks ||
+            function () {
+              return [];
+            }
+        });
+      if ("object" === typeof type && null !== type)
+        switch (getProperty(type, "$$typeof")) {
+          case REACT_FORWARD_REF_TYPE:
+            setSignature(type.render, key, forceReset, getCustomHooks);
+            break;
+          case REACT_MEMO_TYPE:
+            setSignature(type.type, key, forceReset, getCustomHooks);
+        }
+    }
+    function collectCustomHooksForSignature(type) {
+      type = allSignaturesByType.get(type);
+      void 0 !== type && computeFullKey(type);
+    }
+    var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"),
+      REACT_MEMO_TYPE = Symbol.for("react.memo"),
+      PossiblyWeakMap = "function" === typeof WeakMap ? WeakMap : Map,
+      allFamiliesByID = new Map(),
+      allFamiliesByType = new PossiblyWeakMap(),
+      allSignaturesByType = new PossiblyWeakMap(),
+      updatedFamiliesByType = new PossiblyWeakMap(),
+      pendingUpdates = [],
+      helpersByRendererID = new Map(),
+      helpersByRoot = new Map(),
+      mountedRoots = new Set(),
+      failedRoots = new Set(),
+      rootElements = "function" === typeof WeakMap ? new WeakMap() : null,
+      isPerformingRefresh = !1;
+    exports._getMountedRootCount = function () {
+      return mountedRoots.size;
+    };
+    exports.collectCustomHooksForSignature = collectCustomHooksForSignature;
+    exports.createSignatureFunctionForTransform = function () {
+      var savedType,
+        hasCustomHooks,
+        didCollectHooks = !1;
+      return function (type, key, forceReset, getCustomHooks) {
+        if ("string" === typeof key)
+          return (
+            savedType ||
+              ((savedType = type),
+              (hasCustomHooks = "function" === typeof getCustomHooks)),
+            null == type ||
+              ("function" !== typeof type && "object" !== typeof type) ||
+              setSignature(type, key, forceReset, getCustomHooks),
+            type
+          );
+        !didCollectHooks &&
+          hasCustomHooks &&
+          ((didCollectHooks = !0), collectCustomHooksForSignature(savedType));
+      };
+    };
+    exports.getFamilyByID = function (id) {
+      return allFamiliesByID.get(id);
+    };
+    exports.getFamilyByType = function (type) {
+      return allFamiliesByType.get(type);
+    };
+    exports.hasUnrecoverableErrors = function () {
+      return !1;
+    };
+    exports.injectIntoGlobalHook = function (globalObject) {
+      var hook = globalObject.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+      if (void 0 === hook) {
+        var nextID = 0;
+        globalObject.__REACT_DEVTOOLS_GLOBAL_HOOK__ = hook = {
+          renderers: new Map(),
+          supportsFiber: !0,
+          inject: function () {
+            return nextID++;
+          },
+          onScheduleFiberRoot: function () {},
+          onCommitFiberRoot: function () {},
+          onCommitFiberUnmount: function () {}
+        };
+      }
+      if (hook.isDisabled)
+        console.warn(
+          "Something has shimmed the React DevTools global hook (__REACT_DEVTOOLS_GLOBAL_HOOK__). Fast Refresh is not compatible with this shim and will be disabled."
+        );
+      else {
+        var oldInject = hook.inject;
+        hook.inject = function (injected) {
+          var id = oldInject.apply(this, arguments);
+          "function" === typeof injected.scheduleRefresh &&
+            "function" === typeof injected.setRefreshHandler &&
+            helpersByRendererID.set(id, injected);
+          return id;
+        };
+        hook.renderers.forEach(function (injected, id) {
+          "function" === typeof injected.scheduleRefresh &&
+            "function" === typeof injected.setRefreshHandler &&
+            helpersByRendererID.set(id, injected);
+        });
+        var oldOnCommitFiberRoot = hook.onCommitFiberRoot,
+          oldOnScheduleFiberRoot = hook.onScheduleFiberRoot || function () {};
+        hook.onScheduleFiberRoot = function (id, root, children) {
+          isPerformingRefresh ||
+            (failedRoots.delete(root),
+            null !== rootElements && rootElements.set(root, children));
+          return oldOnScheduleFiberRoot.apply(this, arguments);
+        };
+        hook.onCommitFiberRoot = function (
+          id,
+          root,
+          maybePriorityLevel,
+          didError
+        ) {
+          var helpers = helpersByRendererID.get(id);
+          if (void 0 !== helpers) {
+            helpersByRoot.set(root, helpers);
+            helpers = root.current;
+            var alternate = helpers.alternate;
+            null !== alternate
+              ? ((alternate =
+                  null != alternate.memoizedState &&
+                  null != alternate.memoizedState.element &&
+                  mountedRoots.has(root)),
+                (helpers =
+                  null != helpers.memoizedState &&
+                  null != helpers.memoizedState.element),
+                !alternate && helpers
+                  ? (mountedRoots.add(root), failedRoots.delete(root))
+                  : (alternate && helpers) ||
+                    (alternate && !helpers
+                      ? (mountedRoots.delete(root),
+                        didError
+                          ? failedRoots.add(root)
+                          : helpersByRoot.delete(root))
+                      : alternate ||
+                        helpers ||
+                        (didError && failedRoots.add(root))))
+              : mountedRoots.add(root);
+          }
+          return oldOnCommitFiberRoot.apply(this, arguments);
+        };
+      }
+    };
+    exports.isLikelyComponentType = function (type) {
+      switch (typeof type) {
+        case "function":
+          if (null != type.prototype) {
+            if (type.prototype.isReactComponent) return !0;
+            var ownNames = Object.getOwnPropertyNames(type.prototype);
+            if (
+              1 < ownNames.length ||
+              "constructor" !== ownNames[0] ||
+              type.prototype.__proto__ !== Object.prototype
+            )
+              return !1;
+          }
+          type = type.name || type.displayName;
+          return "string" === typeof type && /^[A-Z]/.test(type);
+        case "object":
+          if (null != type)
+            switch (getProperty(type, "$$typeof")) {
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_MEMO_TYPE:
+                return !0;
+            }
+          return !1;
+        default:
+          return !1;
+      }
+    };
+    exports.performReactRefresh = function () {
+      if (0 === pendingUpdates.length || isPerformingRefresh) return null;
+      isPerformingRefresh = !0;
+      try {
+        var staleFamilies = new Set(),
+          updatedFamilies = new Set(),
+          updates = pendingUpdates;
+        pendingUpdates = [];
+        updates.forEach(function (_ref) {
+          var family = _ref[0];
+          _ref = _ref[1];
+          var prevType = family.current;
+          updatedFamiliesByType.set(prevType, family);
+          updatedFamiliesByType.set(_ref, family);
+          family.current = _ref;
+          (prevType.prototype && prevType.prototype.isReactComponent) ||
+          (_ref.prototype && _ref.prototype.isReactComponent)
+            ? (_ref = !1)
+            : ((prevType = allSignaturesByType.get(prevType)),
+              (_ref = allSignaturesByType.get(_ref)),
+              (_ref =
+                (void 0 === prevType && void 0 === _ref) ||
+                (void 0 !== prevType &&
+                  void 0 !== _ref &&
+                  computeFullKey(prevType) === computeFullKey(_ref) &&
+                  !_ref.forceReset)
+                  ? !0
+                  : !1));
+          _ref ? updatedFamilies.add(family) : staleFamilies.add(family);
+        });
+        var update = {
+          updatedFamilies: updatedFamilies,
+          staleFamilies: staleFamilies
+        };
+        helpersByRendererID.forEach(function (helpers) {
+          helpers.setRefreshHandler(resolveFamily);
+        });
+        var didError = !1,
+          firstError = null,
+          failedRootsSnapshot = cloneSet(failedRoots),
+          mountedRootsSnapshot = cloneSet(mountedRoots),
+          helpersByRootSnapshot = cloneMap(helpersByRoot);
+        failedRootsSnapshot.forEach(function (root) {
+          var helpers = helpersByRootSnapshot.get(root);
+          if (void 0 === helpers)
+            throw Error(
+              "Could not find helpers for a root. This is a bug in React Refresh."
+            );
+          failedRoots.has(root);
+          if (null !== rootElements && rootElements.has(root)) {
+            var element = rootElements.get(root);
+            try {
+              helpers.scheduleRoot(root, element);
+            } catch (err) {
+              didError || ((didError = !0), (firstError = err));
+            }
+          }
+        });
+        mountedRootsSnapshot.forEach(function (root) {
+          var helpers = helpersByRootSnapshot.get(root);
+          if (void 0 === helpers)
+            throw Error(
+              "Could not find helpers for a root. This is a bug in React Refresh."
+            );
+          mountedRoots.has(root);
+          try {
+            helpers.scheduleRefresh(root, update);
+          } catch (err) {
+            didError || ((didError = !0), (firstError = err));
+          }
+        });
+        if (didError) throw firstError;
+        return update;
+      } finally {
+        isPerformingRefresh = !1;
+      }
+    };
+    exports.register = register;
+    exports.setSignature = setSignature;
+  })();
+
+
+},
+"../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/runtime.js"(module, __unused_rspack_exports, __webpack_require__) {
+
+
+if (false) {} else {
+  module.exports = __webpack_require__("../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/cjs/react-refresh-runtime.development.js");
+}
+
+
+},
 "../node_modules/.pnpm/react@19.2.0/node_modules/react/cjs/react-jsx-dev-runtime.development.js"(__unused_rspack_module, exports, __webpack_require__) {
 /**
  * @license React
@@ -31431,118 +31782,1858 @@ module.exports = function (hash, moduleMap, options) {
 
 
 },
-"./src/app.tsx"(__unused_rspack_module, __webpack_exports__, __webpack_require__) {
+"./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[10].use[1]!../node_modules/.pnpm/postcss-loader@7.3.4_postcss@8.5.6_typescript@5.9.3_webpack@5.99.9/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[10].use[2]!./src/styles/globals.css"(module, __unused_rspack_exports, __webpack_require__) {
+// Imports
+var ___CSS_LOADER_API_NO_SOURCEMAP_IMPORT___ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_EXPORT___ = ___CSS_LOADER_API_IMPORT___(___CSS_LOADER_API_NO_SOURCEMAP_IMPORT___);
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}/*
+! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured \`sans\` font-family by default.
+5. Use the user's configured \`sans\` font-feature-settings by default.
+6. Use the user's configured \`sans\` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+
+html,
+:host {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-feature-settings: normal; /* 5 */
+  font-variation-settings: normal; /* 6 */
+  -webkit-tap-highlight-color: transparent; /* 7 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from \`html\` so users can set them as a class directly on the \`html\` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured \`mono\` font-family by default.
+2. Use the user's configured \`mono\` font-feature-settings by default.
+3. Use the user's configured \`mono\` font-variation-settings by default.
+4. Correct the odd \`em\` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-feature-settings: normal; /* 2 */
+  font-variation-settings: normal; /* 3 */
+  font-size: 1em; /* 4 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent \`sub\` and \`sup\` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  letter-spacing: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional \`:invalid\` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to \`inherit\` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements \`display: block\` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add \`vertical-align: middle\` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+  * {
+  border-color: hsl(var(--border));
+}
+  body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+
+  .container {
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px) {
+
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px) {
+
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px) {
+
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px) {
+
+  .container {
+    max-width: 1536px;
+  }
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.mt-auto {
+  margin-top: auto;
+}
+.flex {
+  display: flex;
+}
+.inline-flex {
+  display: inline-flex;
+}
+.grid {
+  display: grid;
+}
+.h-10 {
+  height: 2.5rem;
+}
+.h-11 {
+  height: 2.75rem;
+}
+.h-9 {
+  height: 2.25rem;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.w-10 {
+  width: 2.5rem;
+}
+.w-full {
+  width: 100%;
+}
+.max-w-3xl {
+  max-width: 48rem;
+}
+.max-w-4xl {
+  max-width: 56rem;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.list-inside {
+  list-style-position: inside;
+}
+.list-disc {
+  list-style-type: disc;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.gap-6 {
+  gap: 1.5rem;
+}
+.space-y-1\\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.375rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+}
+.space-y-8 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+.rounded-lg {
+  border-radius: var(--radius);
+}
+.rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+.border {
+  border-width: 1px;
+}
+.border-b {
+  border-bottom-width: 1px;
+}
+.border-t {
+  border-top-width: 1px;
+}
+.border-input {
+  border-color: hsl(var(--input));
+}
+.bg-background {
+  background-color: hsl(var(--background));
+}
+.bg-card {
+  background-color: hsl(var(--card));
+}
+.bg-destructive {
+  background-color: hsl(var(--destructive));
+}
+.bg-destructive\\/90 {
+  background-color: hsl(var(--destructive) / 0.9);
+}
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+.bg-primary\\/90 {
+  background-color: hsl(var(--primary) / 0.9);
+}
+.bg-red-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1));
+}
+.bg-secondary {
+  background-color: hsl(var(--secondary));
+}
+.bg-secondary\\/80 {
+  background-color: hsl(var(--secondary) / 0.8);
+}
+.p-6 {
+  padding: 1.5rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.pt-0 {
+  padding-top: 0px;
+}
+.text-center {
+  text-align: center;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-medium {
+  font-weight: 500;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.leading-none {
+  line-height: 1;
+}
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+.text-accent-foreground {
+  color: hsl(var(--accent-foreground));
+}
+.text-card-foreground {
+  color: hsl(var(--card-foreground));
+}
+.text-destructive-foreground {
+  color: hsl(var(--destructive-foreground));
+}
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+.text-primary {
+  color: hsl(var(--primary));
+}
+.text-primary-foreground {
+  color: hsl(var(--primary-foreground));
+}
+.text-secondary-foreground {
+  color: hsl(var(--secondary-foreground));
+}
+.underline {
+  text-decoration-line: underline;
+}
+.underline-offset-4 {
+  text-underline-offset: 4px;
+}
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.outline {
+  outline-style: solid;
+}
+.ring-offset-background {
+  --tw-ring-offset-color: hsl(var(--background));
+}
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.hover\\:bg-accent:hover {
+  background-color: hsl(var(--accent));
+}
+
+.hover\\:bg-destructive\\/90:hover {
+  background-color: hsl(var(--destructive) / 0.9);
+}
+
+.hover\\:bg-primary\\/90:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.hover\\:bg-secondary\\/80:hover {
+  background-color: hsl(var(--secondary) / 0.8);
+}
+
+.hover\\:text-accent-foreground:hover {
+  color: hsl(var(--accent-foreground));
+}
+
+.hover\\:underline:hover {
+  text-decoration-line: underline;
+}
+
+.focus-visible\\:outline-none:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-visible\\:ring-2:focus-visible {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus-visible\\:ring-ring:focus-visible {
+  --tw-ring-color: hsl(var(--ring));
+}
+
+.focus-visible\\:ring-offset-2:focus-visible {
+  --tw-ring-offset-width: 2px;
+}
+
+.disabled\\:pointer-events-none:disabled {
+  pointer-events: none;
+}
+
+.disabled\\:opacity-50:disabled {
+  opacity: 0.5;
+}
+
+@media (min-width: 768px) {
+
+  .md\\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+`, ""]);
+// Exports
+module.exports = ___CSS_LOADER_EXPORT___;
+
+
+},
+"./node_modules/css-loader/dist/runtime/api.js"(module) {
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = [];
+
+  // return the list of modules as css string
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+      content += cssWithMappingToString(item);
+      if (needLayer) {
+        content += "}";
+      }
+      if (item[2]) {
+        content += "}";
+      }
+      if (item[4]) {
+        content += "}";
+      }
+      return content;
+    }).join("");
+  };
+
+  // import a list of modules into the list
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+    var alreadyImportedModules = {};
+    if (dedupe) {
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+      list.push(item);
+    }
+  };
+  return list;
+};
+
+},
+"./node_modules/css-loader/dist/runtime/noSourceMaps.js"(module) {
+
+
+module.exports = function (i) {
+  return i[1];
+};
+
+},
+"./src/styles/globals.css"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (__rspack_default_export)
+});
+/* import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__rspack_import_0 = __webpack_require__("./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__rspack_import_0_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__rspack_import_0);
+/* import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__rspack_import_1 = __webpack_require__("./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__rspack_import_1_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__rspack_import_1);
+/* import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__rspack_import_2 = __webpack_require__("./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__rspack_import_2_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__rspack_import_2);
+/* import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__rspack_import_3 = __webpack_require__("./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__rspack_import_3_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__rspack_import_3);
+/* import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__rspack_import_4 = __webpack_require__("./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__rspack_import_4_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__rspack_import_4);
+/* import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__rspack_import_5 = __webpack_require__("./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__rspack_import_5_default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__rspack_import_5);
+/* import */ var _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6 = __webpack_require__("./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[10].use[1]!../node_modules/.pnpm/postcss-loader@7.3.4_postcss@8.5.6_typescript@5.9.3_webpack@5.99.9/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[10].use[2]!./src/styles/globals.css");
+/* import */ var _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6);
+
+/* reexport */ var __rspack_reexport = {};
+/* reexport */ for( const __rspack_import_key in _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6) if(__rspack_import_key !== "default") __rspack_reexport[__rspack_import_key] =() => _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6[__rspack_import_key]
+/* reexport */ __webpack_require__.d(__webpack_exports__, __rspack_reexport);
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__rspack_import_5_default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__rspack_import_3_default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__rspack_import_2_default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__rspack_import_1_default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__rspack_import_4_default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__rspack_import_0_default()((_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default()), options);
+
+
+if (true) {
+  if (!(_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals) || module.hot.invalidate) {
+    var isEqualLocals = function isEqualLocals(a, b, isNamedExport) {
+  if (!a && b || a && !b) {
+    return false;
+  }
+  var p;
+  for (p in a) {
+    if (isNamedExport && p === "default") {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+    if (a[p] !== b[p]) {
+      return false;
+    }
+  }
+  for (p in b) {
+    if (isNamedExport && p === "default") {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+    if (!a[p]) {
+      return false;
+    }
+  }
+  return true;
+};
+    var isNamedExport = !(_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals);
+    var oldLocals = isNamedExport ? _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6 : (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals);
+
+    module.hot.accept(
+      "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[10].use[1]!../node_modules/.pnpm/postcss-loader@7.3.4_postcss@8.5.6_typescript@5.9.3_webpack@5.99.9/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[10].use[2]!./src/styles/globals.css",
+      function(__rspack_hmr_outdated) {
+/* import */ _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6 = __webpack_require__("./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[10].use[1]!../node_modules/.pnpm/postcss-loader@7.3.4_postcss@8.5.6_typescript@5.9.3_webpack@5.99.9/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[10].use[2]!./src/styles/globals.css");
+/* import */ _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6);
+(function () {
+        if (!isEqualLocals(oldLocals, isNamedExport ? _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6 : (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals), isNamedExport)) {
+                module.hot.invalidate();
+
+                return;
+              }
+
+              oldLocals = isNamedExport ? _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6 : (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals);
+
+              update((_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default()));
+      })(__rspack_hmr_outdated); }.bind(this)
+    )
+  }
+
+  module.hot.dispose(function() {
+    update();
+  });
+}
+
+
+
+       /* export default */ const __rspack_default_export = ((_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default()) && (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals) ? (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_10_use_1_node_modules_pnpm_postcss_loader_7_3_4_postcss_8_5_6_typescript_5_9_3_webpack_5_99_9_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_10_use_2_globals_css__rspack_import_6_default().locals) : undefined);
+
+
+},
+"./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js"(module) {
+
+
+var stylesInDOM = [];
+function getIndexByIdentifier(identifier) {
+  var result = -1;
+  for (var i = 0; i < stylesInDOM.length; i++) {
+    if (stylesInDOM[i].identifier === identifier) {
+      result = i;
+      break;
+    }
+  }
+  return result;
+}
+function modulesToDom(list, options) {
+  var idCountMap = {};
+  var identifiers = [];
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    var id = options.base ? item[0] + options.base : item[0];
+    var count = idCountMap[id] || 0;
+    var identifier = "".concat(id, " ").concat(count);
+    idCountMap[id] = count + 1;
+    var indexByIdentifier = getIndexByIdentifier(identifier);
+    var obj = {
+      css: item[1],
+      media: item[2],
+      sourceMap: item[3],
+      supports: item[4],
+      layer: item[5]
+    };
+    if (indexByIdentifier !== -1) {
+      stylesInDOM[indexByIdentifier].references++;
+      stylesInDOM[indexByIdentifier].updater(obj);
+    } else {
+      var updater = addElementStyle(obj, options);
+      options.byIndex = i;
+      stylesInDOM.splice(i, 0, {
+        identifier: identifier,
+        updater: updater,
+        references: 1
+      });
+    }
+    identifiers.push(identifier);
+  }
+  return identifiers;
+}
+function addElementStyle(obj, options) {
+  var api = options.domAPI(options);
+  api.update(obj);
+  var updater = function updater(newObj) {
+    if (newObj) {
+      if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap && newObj.supports === obj.supports && newObj.layer === obj.layer) {
+        return;
+      }
+      api.update(obj = newObj);
+    } else {
+      api.remove();
+    }
+  };
+  return updater;
+}
+module.exports = function (list, options) {
+  options = options || {};
+  list = list || [];
+  var lastIdentifiers = modulesToDom(list, options);
+  return function update(newList) {
+    newList = newList || [];
+    for (var i = 0; i < lastIdentifiers.length; i++) {
+      var identifier = lastIdentifiers[i];
+      var index = getIndexByIdentifier(identifier);
+      stylesInDOM[index].references--;
+    }
+    var newLastIdentifiers = modulesToDom(newList, options);
+    for (var _i = 0; _i < lastIdentifiers.length; _i++) {
+      var _identifier = lastIdentifiers[_i];
+      var _index = getIndexByIdentifier(_identifier);
+      if (stylesInDOM[_index].references === 0) {
+        stylesInDOM[_index].updater();
+        stylesInDOM.splice(_index, 1);
+      }
+    }
+    lastIdentifiers = newLastIdentifiers;
+  };
+};
+
+},
+"./node_modules/style-loader/dist/runtime/insertBySelector.js"(module) {
+
+
+var memo = {};
+
+/* istanbul ignore next  */
+function getTarget(target) {
+  if (typeof memo[target] === "undefined") {
+    var styleTarget = document.querySelector(target);
+
+    // Special case to return head of iframe instead of iframe itself
+    if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+      try {
+        // This will throw an exception if access to iframe is blocked
+        // due to cross-origin restrictions
+        styleTarget = styleTarget.contentDocument.head;
+      } catch (e) {
+        // istanbul ignore next
+        styleTarget = null;
+      }
+    }
+    memo[target] = styleTarget;
+  }
+  return memo[target];
+}
+
+/* istanbul ignore next  */
+function insertBySelector(insert, style) {
+  var target = getTarget(insert);
+  if (!target) {
+    throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");
+  }
+  target.appendChild(style);
+}
+module.exports = insertBySelector;
+
+},
+"./node_modules/style-loader/dist/runtime/insertStyleElement.js"(module) {
+
+
+/* istanbul ignore next  */
+function insertStyleElement(options) {
+  var element = document.createElement("style");
+  options.setAttributes(element, options.attributes);
+  options.insert(element, options.options);
+  return element;
+}
+module.exports = insertStyleElement;
+
+},
+"./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js"(module, __unused_rspack_exports, __webpack_require__) {
+
+
+/* istanbul ignore next  */
+function setAttributesWithoutAttributes(styleElement) {
+  var nonce =  true ? __webpack_require__.nc : 0;
+  if (nonce) {
+    styleElement.setAttribute("nonce", nonce);
+  }
+}
+module.exports = setAttributesWithoutAttributes;
+
+},
+"./node_modules/style-loader/dist/runtime/styleDomAPI.js"(module) {
+
+
+/* istanbul ignore next  */
+function apply(styleElement, options, obj) {
+  var css = "";
+  if (obj.supports) {
+    css += "@supports (".concat(obj.supports, ") {");
+  }
+  if (obj.media) {
+    css += "@media ".concat(obj.media, " {");
+  }
+  var needLayer = typeof obj.layer !== "undefined";
+  if (needLayer) {
+    css += "@layer".concat(obj.layer.length > 0 ? " ".concat(obj.layer) : "", " {");
+  }
+  css += obj.css;
+  if (needLayer) {
+    css += "}";
+  }
+  if (obj.media) {
+    css += "}";
+  }
+  if (obj.supports) {
+    css += "}";
+  }
+  var sourceMap = obj.sourceMap;
+  if (sourceMap && typeof btoa !== "undefined") {
+    css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
+  }
+
+  // For old IE
+  /* istanbul ignore if  */
+  options.styleTagTransform(css, styleElement, options.options);
+}
+function removeStyleElement(styleElement) {
+  // istanbul ignore if
+  if (styleElement.parentNode === null) {
+    return false;
+  }
+  styleElement.parentNode.removeChild(styleElement);
+}
+
+/* istanbul ignore next  */
+function domAPI(options) {
+  if (typeof document === "undefined") {
+    return {
+      update: function update() {},
+      remove: function remove() {}
+    };
+  }
+  var styleElement = options.insertStyleElement(options);
+  return {
+    update: function update(obj) {
+      apply(styleElement, options, obj);
+    },
+    remove: function remove() {
+      removeStyleElement(styleElement);
+    }
+  };
+}
+module.exports = domAPI;
+
+},
+"./node_modules/style-loader/dist/runtime/styleTagTransform.js"(module) {
+
+
+/* istanbul ignore next  */
+function styleTagTransform(css, styleElement) {
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css;
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild);
+    }
+    styleElement.appendChild(document.createTextNode(css));
+  }
+}
+module.exports = styleTagTransform;
+
+},
+"./src/components/layout/index.ts"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Footer: () => (/* reexport safe */ _footer__rspack_import_1.Footer),
+  Header: () => (/* reexport safe */ _header__rspack_import_0.Header)
+});
+/* import */ var _header__rspack_import_0 = __webpack_require__("./src/components/layout/header.tsx");
+/* import */ var _footer__rspack_import_1 = __webpack_require__("./src/components/layout/footer.tsx");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/components/ui/index.ts"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Button: () => (/* reexport safe */ _button__rspack_import_0.Button),
+  Card: () => (/* reexport safe */ _card__rspack_import_1.Card),
+  CardContent: () => (/* reexport safe */ _card__rspack_import_1.CardContent),
+  CardDescription: () => (/* reexport safe */ _card__rspack_import_1.CardDescription),
+  CardFooter: () => (/* reexport safe */ _card__rspack_import_1.CardFooter),
+  CardHeader: () => (/* reexport safe */ _card__rspack_import_1.CardHeader),
+  CardTitle: () => (/* reexport safe */ _card__rspack_import_1.CardTitle)
+});
+/* import */ var _button__rspack_import_0 = __webpack_require__("./src/components/ui/button.tsx");
+/* import */ var _card__rspack_import_1 = __webpack_require__("./src/components/ui/card.tsx");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/lib/utils.ts"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  cn: () => (cn)
+});
+/* import */ var clsx__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs");
+/* import */ var tailwind_merge__rspack_import_1 = __webpack_require__("../node_modules/.pnpm/tailwind-merge@2.6.0/node_modules/tailwind-merge/dist/bundle-mjs.mjs");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+
+/**
+ * Utility function to merge Tailwind CSS classes
+ * Combines clsx and tailwind-merge for optimal class merging
+ */ function cn() {
+    for(var _len = arguments.length, inputs = new Array(_len), _key = 0; _key < _len; _key++){
+        inputs[_key] = arguments[_key];
+    }
+    return (0,tailwind_merge__rspack_import_1.twMerge)((0,clsx__rspack_import_0.clsx)(inputs));
+}
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/app.tsx"(module, __webpack_exports__, __webpack_require__) {
 __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   "default": () => (App)
 });
 /* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
-/* import */ var react__rspack_import_1 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/index.js");
-/* import */ var react__rspack_import_1_default = /*#__PURE__*/__webpack_require__.n(react__rspack_import_1);
-/**
- * @file 示例组件
- * @description 展示一个带有自动更新时间的页面标题，用于演示 Esmx 框架的基本功能
- */ function _array_like_to_array(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-    for(var i = 0, arr2 = new Array(len); i < len; i++)arr2[i] = arr[i];
-    return arr2;
-}
-function _array_with_holes(arr) {
-    if (Array.isArray(arr)) return arr;
-}
-function _iterable_to_array_limit(arr, i) {
-    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-    if (_i == null) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _s, _e;
-    try {
-        for(_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true){
-            _arr.push(_s.value);
-            if (i && _arr.length === i) break;
-        }
-    } catch (err) {
-        _d = true;
-        _e = err;
-    } finally{
-        try {
-            if (!_n && _i["return"] != null) _i["return"]();
-        } finally{
-            if (_d) throw _e;
-        }
-    }
-    return _arr;
-}
-function _non_iterable_rest() {
-    throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-function _sliced_to_array(arr, i) {
-    return _array_with_holes(arr) || _iterable_to_array_limit(arr, i) || _unsupported_iterable_to_array(arr, i) || _non_iterable_rest();
-}
-function _unsupported_iterable_to_array(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return _array_like_to_array(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(n);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _array_like_to_array(o, minLen);
-}
+/* import */ var _pages_home__rspack_import_1 = __webpack_require__("./src/pages/home/index.tsx");
+/* import */ var _styles_globals_css__rspack_import_2 = __webpack_require__("./src/styles/globals.css");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
 
-var _s = $RefreshSig$();
+
 
 function App() {
-    _s();
-    var _useState = _sliced_to_array((0,react__rspack_import_1.useState)(new Date().toISOString()), 2), time = _useState[0], setTime = _useState[1];
-    (0,react__rspack_import_1.useEffect)(function() {
-        var timer = setInterval(function() {
-            setTime(new Date().toISOString());
-        }, 1000);
-        return function() {
-            return clearInterval(timer);
-        };
-    }, []);
-    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
-        children: [
-            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("h1", {
-                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("a", {
-                    href: "https://esmx.dev",
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    children: "Esmx - React"
-                }, void 0, false, {
-                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/app.tsx",
-                    lineNumber: 21,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
-                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/app.tsx",
-                lineNumber: 20,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("time", {
-                dateTime: time,
-                children: time
-            }, void 0, false, {
-                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/app.tsx",
-                lineNumber: 25,
-                columnNumber: 7
-            }, this)
-        ]
-    }, void 0, true, {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_pages_home__rspack_import_1["default"], {}, void 0, false, {
         fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/app.tsx",
-        lineNumber: 19,
-        columnNumber: 5
+        lineNumber: 5,
+        columnNumber: 10
     }, this);
 }
-_s(App, "dx7dHjTUh4K5kGaLx04v1fKAFss=");
 _c = App;
 var _c;
 $RefreshReg$(_c, "App");
 
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
 
 },
-"./src/create-app.tsx"(__unused_rspack_module, __webpack_exports__, __webpack_require__) {
+"./src/components/layout/footer.tsx"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Footer: () => (Footer)
+});
+/* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+function Footer() {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("footer", {
+        className: "border-t mt-auto",
+        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+            className: "container mx-auto px-4 py-6",
+            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                className: "text-center text-sm text-muted-foreground",
+                children: "\xa9 2024 React Demo. Built with Esmx + React + Tailwind CSS + shadcn/ui"
+            }, void 0, false, {
+                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/footer.tsx",
+                lineNumber: 5,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/footer.tsx",
+            lineNumber: 4,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/footer.tsx",
+        lineNumber: 3,
+        columnNumber: 5
+    }, this);
+}
+_c = Footer;
+var _c;
+$RefreshReg$(_c, "Footer");
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/components/layout/header.tsx"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Header: () => (Header)
+});
+/* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
+/* import */ var _components_ui__rspack_import_1 = __webpack_require__("./src/components/ui/index.ts");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+
+function Header() {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("header", {
+        className: "border-b",
+        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+            className: "container mx-auto px-4 py-4",
+            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("nav", {
+                className: "flex items-center justify-between",
+                children: [
+                    /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                        className: "text-xl font-bold",
+                        children: "React Demo"
+                    }, void 0, false, {
+                        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                        lineNumber: 8,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                        className: "flex gap-4",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_1.Button, {
+                                variant: "ghost",
+                                asChild: true,
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("a", {
+                                    href: "/",
+                                    children: "Home"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                                    lineNumber: 11,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                                lineNumber: 10,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_1.Button, {
+                                variant: "ghost",
+                                asChild: true,
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("a", {
+                                    href: "/about",
+                                    children: "About"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                                    lineNumber: 14,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                                lineNumber: 13,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                        lineNumber: 9,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+                lineNumber: 7,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+            lineNumber: 6,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/layout/header.tsx",
+        lineNumber: 5,
+        columnNumber: 5
+    }, this);
+}
+_c = Header;
+var _c;
+$RefreshReg$(_c, "Header");
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/components/ui/button.tsx"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Button: () => (Button)
+});
+/* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
+/* import */ var react__rspack_import_1 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/index.js");
+/* import */ var react__rspack_import_1_default = /*#__PURE__*/__webpack_require__.n(react__rspack_import_1);
+/* import */ var _lib_utils__rspack_import_2 = __webpack_require__("./src/lib/utils.ts");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+function _object_spread(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = arguments[i] != null ? arguments[i] : {};
+        var ownKeys = Object.keys(source);
+        if (typeof Object.getOwnPropertySymbols === "function") {
+            ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+            }));
+        }
+        ownKeys.forEach(function(key) {
+            _define_property(target, key, source[key]);
+        });
+    }
+    return target;
+}
+function _object_without_properties(source, excluded) {
+    if (source == null) return {};
+    var target = _object_without_properties_loose(source, excluded);
+    var key, i;
+    if (Object.getOwnPropertySymbols) {
+        var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+        for(i = 0; i < sourceSymbolKeys.length; i++){
+            key = sourceSymbolKeys[i];
+            if (excluded.indexOf(key) >= 0) continue;
+            if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+            target[key] = source[key];
+        }
+    }
+    return target;
+}
+function _object_without_properties_loose(source, excluded) {
+    if (source == null) return {};
+    var target = {};
+    var sourceKeys = Object.keys(source);
+    var key, i;
+    for(i = 0; i < sourceKeys.length; i++){
+        key = sourceKeys[i];
+        if (excluded.indexOf(key) >= 0) continue;
+        target[key] = source[key];
+    }
+    return target;
+}
+var _this = undefined;
+
+
+
+var Button = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c = function(_param, ref) {
+    var className = _param.className, _param_variant = _param.variant, variant = _param_variant === void 0 ? 'default' : _param_variant, _param_size = _param.size, size = _param_size === void 0 ? 'default' : _param_size, props = _object_without_properties(_param, [
+        "className",
+        "variant",
+        "size"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("button", _object_spread({
+        className: (0,_lib_utils__rspack_import_2.cn)('inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', {
+            'bg-primary text-primary-foreground hover:bg-primary/90': variant === 'default',
+            'bg-destructive text-destructive-foreground hover:bg-destructive/90': variant === 'destructive',
+            'border border-input bg-background hover:bg-accent hover:text-accent-foreground': variant === 'outline',
+            'bg-secondary text-secondary-foreground hover:bg-secondary/80': variant === 'secondary',
+            'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
+            'text-primary underline-offset-4 hover:underline': variant === 'link',
+            'h-10 px-4 py-2': size === 'default',
+            'h-9 rounded-md px-3': size === 'sm',
+            'h-11 rounded-md px-8': size === 'lg',
+            'h-10 w-10': size === 'icon'
+        }, className),
+        ref: ref
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/button.tsx",
+        lineNumber: 13,
+        columnNumber: 7
+    }, _this);
+});
+_c1 = Button;
+Button.displayName = 'Button';
+
+var _c, _c1;
+$RefreshReg$(_c, "Button$React.forwardRef");
+$RefreshReg$(_c1, "Button");
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/components/ui/card.tsx"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  Card: () => (Card),
+  CardContent: () => (CardContent),
+  CardDescription: () => (CardDescription),
+  CardFooter: () => (CardFooter),
+  CardHeader: () => (CardHeader),
+  CardTitle: () => (CardTitle)
+});
+/* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
+/* import */ var react__rspack_import_1 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/index.js");
+/* import */ var react__rspack_import_1_default = /*#__PURE__*/__webpack_require__.n(react__rspack_import_1);
+/* import */ var _lib_utils__rspack_import_2 = __webpack_require__("./src/lib/utils.ts");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+function _object_spread(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = arguments[i] != null ? arguments[i] : {};
+        var ownKeys = Object.keys(source);
+        if (typeof Object.getOwnPropertySymbols === "function") {
+            ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+            }));
+        }
+        ownKeys.forEach(function(key) {
+            _define_property(target, key, source[key]);
+        });
+    }
+    return target;
+}
+function _object_without_properties(source, excluded) {
+    if (source == null) return {};
+    var target = _object_without_properties_loose(source, excluded);
+    var key, i;
+    if (Object.getOwnPropertySymbols) {
+        var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+        for(i = 0; i < sourceSymbolKeys.length; i++){
+            key = sourceSymbolKeys[i];
+            if (excluded.indexOf(key) >= 0) continue;
+            if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+            target[key] = source[key];
+        }
+    }
+    return target;
+}
+function _object_without_properties_loose(source, excluded) {
+    if (source == null) return {};
+    var target = {};
+    var sourceKeys = Object.keys(source);
+    var key, i;
+    for(i = 0; i < sourceKeys.length; i++){
+        key = sourceKeys[i];
+        if (excluded.indexOf(key) >= 0) continue;
+        target[key] = source[key];
+    }
+    return target;
+}
+var _this = undefined;
+
+
+
+var Card = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('rounded-lg border bg-card text-card-foreground shadow-sm', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 8,
+        columnNumber: 3
+    }, _this);
+});
+_c1 = Card;
+Card.displayName = 'Card';
+var CardHeader = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c2 = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('flex flex-col space-y-1.5 p-6', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 23,
+        columnNumber: 3
+    }, _this);
+});
+_c3 = CardHeader;
+CardHeader.displayName = 'CardHeader';
+var CardTitle = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c4 = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("h3", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('text-2xl font-semibold leading-none tracking-tight', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 35,
+        columnNumber: 3
+    }, _this);
+});
+_c5 = CardTitle;
+CardTitle.displayName = 'CardTitle';
+var CardDescription = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c6 = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('text-sm text-muted-foreground', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 50,
+        columnNumber: 3
+    }, _this);
+});
+_c7 = CardDescription;
+CardDescription.displayName = 'CardDescription';
+var CardContent = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c8 = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('p-6 pt-0', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 62,
+        columnNumber: 3
+    }, _this);
+});
+_c9 = CardContent;
+CardContent.displayName = 'CardContent';
+var CardFooter = /*#__PURE__*/ react__rspack_import_1.forwardRef(_c10 = function(_param, ref) {
+    var className = _param.className, props = _object_without_properties(_param, [
+        "className"
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", _object_spread({
+        ref: ref,
+        className: (0,_lib_utils__rspack_import_2.cn)('flex items-center p-6 pt-0', className)
+    }, props), void 0, false, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/components/ui/card.tsx",
+        lineNumber: 70,
+        columnNumber: 3
+    }, _this);
+});
+_c11 = CardFooter;
+CardFooter.displayName = 'CardFooter';
+
+var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9, _c10, _c11;
+$RefreshReg$(_c, "Card$React.forwardRef");
+$RefreshReg$(_c1, "Card");
+$RefreshReg$(_c2, "CardHeader$React.forwardRef");
+$RefreshReg$(_c3, "CardHeader");
+$RefreshReg$(_c4, "CardTitle$React.forwardRef");
+$RefreshReg$(_c5, "CardTitle");
+$RefreshReg$(_c6, "CardDescription$React.forwardRef");
+$RefreshReg$(_c7, "CardDescription");
+$RefreshReg$(_c8, "CardContent$React.forwardRef");
+$RefreshReg$(_c9, "CardContent");
+$RefreshReg$(_c10, "CardFooter$React.forwardRef");
+$RefreshReg$(_c11, "CardFooter");
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/create-app.tsx"(module, __webpack_exports__, __webpack_require__) {
 __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   createApp: () => (createApp)
@@ -31550,6 +33641,7 @@ __webpack_require__.d(__webpack_exports__, {
 /* import */ var react__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/index.js");
 /* import */ var react__rspack_import_0_default = /*#__PURE__*/__webpack_require__.n(react__rspack_import_0);
 /* import */ var _app__rspack_import_1 = __webpack_require__("./src/app.tsx");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
 /**
  * @file 应用实例创建
  * @description 负责创建和配置应用实例
@@ -31562,22 +33654,737 @@ function createApp() {
     };
 }
 
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
 
 },
-"./src/entry.client.tsx"(__unused_rspack_module, __webpack_exports__, __webpack_require__) {
+"./src/entry.client.tsx"(module, __webpack_exports__, __webpack_require__) {
 __webpack_require__.r(__webpack_exports__);
 /* import */ var react_dom_client__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react-dom@19.2.0_react@19.2.0/node_modules/react-dom/client.js");
 /* import */ var _create_app__rspack_import_1 = __webpack_require__("./src/create-app.tsx");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
 /**
- * @file 客户端入口文件
- * @description 负责客户端交互逻辑和动态更新
+ * @file 
+ * @description 
  */ 
 
-// 创建应用实例
 var app = (0,_create_app__rspack_import_1.createApp)().app;
-// 挂载应用实例 (使用 hydrateRoot untuk SSR)
+//  (hydrateRoot untuk SSR)
 var container = document.getElementById('app');
 (0,react_dom_client__rspack_import_0.hydrateRoot)(container, app);
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"./src/pages/home/index.tsx"(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (HomePage)
+});
+/* import */ var react_jsx_dev_runtime__rspack_import_0 = __webpack_require__("../node_modules/.pnpm/react@19.2.0/node_modules/react/jsx-dev-runtime.js");
+/* import */ var _components_layout__rspack_import_1 = __webpack_require__("./src/components/layout/index.ts");
+/* import */ var _components_ui__rspack_import_2 = __webpack_require__("./src/components/ui/index.ts");
+/* provided dependency */ var $ReactRefreshRuntime$ = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js");
+
+
+
+
+function HomePage() {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+        className: "min-h-screen w-full flex flex-col",
+        children: [
+            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_layout__rspack_import_1.Header, {}, void 0, false, {
+                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                lineNumber: 8,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("main", {
+                className: "flex-1 container mx-auto px-4 py-8",
+                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                    className: "max-w-4xl mx-auto space-y-8",
+                    children: [
+                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                            className: "text-center space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("h1", {
+                                    className: "text-4xl font-bold",
+                                    children: "Welcome to React Demo"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 12,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                                    className: "text-xl text-muted-foreground",
+                                    children: "Built with Esmx, React, Tailwind CSS, and shadcn/ui"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 13,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                            lineNumber: 11,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                            className: "grid gap-6 md:grid-cols-2",
+                            children: [
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardTitle, {
+                                                    children: "Esmx Framework"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 21,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardDescription, {
+                                                    children: "Next-generation micro-frontend framework"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 22,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 20,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                                                className: "text-sm text-muted-foreground",
+                                                children: "Zero runtime overhead with native ESM support"
+                                            }, void 0, false, {
+                                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                lineNumber: 27,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 26,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 19,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardTitle, {
+                                                    children: "React 19"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 35,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardDescription, {
+                                                    children: "Latest React with automatic JSX runtime"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 36,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 34,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                                                className: "text-sm text-muted-foreground",
+                                                children: "Modern React features with server-side rendering"
+                                            }, void 0, false, {
+                                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                lineNumber: 41,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 40,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 33,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardTitle, {
+                                                    children: "Tailwind CSS"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 49,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardDescription, {
+                                                    children: "Utility-first CSS framework"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 50,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 48,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                                                className: "text-sm text-muted-foreground",
+                                                children: "Rapid UI development with Tailwind utilities"
+                                            }, void 0, false, {
+                                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                lineNumber: 55,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 54,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 47,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardTitle, {
+                                                    children: "shadcn/ui"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 63,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardDescription, {
+                                                    children: "Beautiful component library"
+                                                }, void 0, false, {
+                                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                    lineNumber: 64,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 62,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("p", {
+                                                className: "text-sm text-muted-foreground",
+                                                children: "Copy-paste components built with Radix UI"
+                                            }, void 0, false, {
+                                                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                                lineNumber: 69,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                            lineNumber: 68,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 61,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                            lineNumber: 18,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)("div", {
+                            className: "flex justify-center gap-4",
+                            children: [
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Button, {
+                                    children: "Get Started"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 77,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_ui__rspack_import_2.Button, {
+                                    variant: "outline",
+                                    children: "Learn More"
+                                }, void 0, false, {
+                                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                                    lineNumber: 78,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                            lineNumber: 76,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                    lineNumber: 10,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                lineNumber: 9,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0,react_jsx_dev_runtime__rspack_import_0.jsxDEV)(_components_layout__rspack_import_1.Footer, {}, void 0, false, {
+                fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+                lineNumber: 82,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "/Users/dupoin/Documents/GitHub/esmx/react-demo/src/pages/home/index.tsx",
+        lineNumber: 7,
+        columnNumber: 5
+    }, this);
+}
+_c = HomePage;
+var _c;
+$RefreshReg$(_c, "HomePage");
+
+function $RefreshSig$() { return $ReactRefreshRuntime$.createSignatureFunctionForTransform() }
+function $RefreshReg$(type, id) { $ReactRefreshRuntime$.register(type, module.id + "_" + id) }
+Promise.resolve().then(() => { $ReactRefreshRuntime$.refresh(module.id, module.hot) });
+
+
+},
+"../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefresh.js"(module, __unused_rspack_exports, __webpack_require__) {
+// Thanks https://github.com/pmmmwh/react-refresh-webpack-plugin
+const RefreshUtils = __webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/refreshUtils.js");
+const RefreshRuntime = __webpack_require__("../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/runtime.js");
+
+// Port from https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/loader/utils/getRefreshModuleRuntime.js#L29
+function refresh(moduleId, webpackHot) {
+  const currentExports = RefreshUtils.getModuleExports(moduleId);
+  const fn = (exports) => {
+    var errorOverlay;
+    if (true) {
+      errorOverlay = false;
+    }
+    var testMode;
+    if (typeof __react_refresh_test__ !== 'undefined') {
+      testMode = __react_refresh_test__;
+    }
+    RefreshUtils.executeRuntime(
+      exports,
+      moduleId,
+      webpackHot,
+      errorOverlay,
+      testMode,
+    );
+  };
+  if (typeof Promise !== 'undefined' && currentExports instanceof Promise) {
+    currentExports.then(fn);
+  } else {
+    fn(currentExports);
+  }
+}
+
+module.exports = {
+  refresh,
+  register: RefreshRuntime.register,
+  createSignatureFunctionForTransform:
+    RefreshRuntime.createSignatureFunctionForTransform,
+};
+
+
+},
+"../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js"(__unused_rspack_module, __unused_rspack_exports, __webpack_require__) {
+/**
+ * The following code is modified based on
+ * https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/0b960573797bf38926937994c481e4fec9ed8aa6/client/ReactRefreshEntry.js
+ *
+ * MIT Licensed
+ * Author Michael Mok
+ * Copyright (c) 2019 Michael Mok
+ * https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/0b960573797bf38926937994c481e4fec9ed8aa6/LICENSE
+ */
+
+var RefreshRuntime = __webpack_require__("../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/runtime.js");
+var safeThis = (function () {
+  // copied from core-js-pure/features/global-this
+  'use strict';
+
+  var check = function (it) {
+    return it && it.Math == Math && it;
+  };
+
+  // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+  // eslint-disable-next-line es/no-global-this -- safe
+  return (
+    check(typeof globalThis == 'object' && globalThis) ||
+    check(typeof window == 'object' && window) ||
+    // eslint-disable-next-line no-restricted-globals -- safe
+    check(typeof self == 'object' && self) ||
+    check(typeof __webpack_require__.g == 'object' && __webpack_require__.g) ||
+    // eslint-disable-next-line no-new-func -- fallback
+    (function () {
+      return this;
+    })() ||
+    this ||
+    Function('return this')()
+  );
+})();
+
+if (true) {
+  if (typeof safeThis !== 'undefined') {
+    var $RefreshInjected$ = '__reactRefreshInjected';
+    // Namespace the injected flag (if necessary) for monorepo compatibility
+    if (
+      false
+    ) {}
+
+    // Only inject the runtime if it hasn't been injected
+    if (!safeThis[$RefreshInjected$]) {
+      RefreshRuntime.injectIntoGlobalHook(safeThis);
+
+      // Empty implementation to avoid "ReferenceError: variable is not defined" in module which didn't pass builtin:react-refresh-loader
+      safeThis.$RefreshSig$ = () => (type) => type;
+      safeThis.$RefreshReg$ = () => {};
+
+      // Mark the runtime as injected to prevent double-injection
+      safeThis[$RefreshInjected$] = true;
+    }
+  }
+}
+
+
+},
+"../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/refreshUtils.js"(module, __unused_rspack_exports, __webpack_require__) {
+/**
+ * The following code is modified based on
+ * https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/0b960573797bf38926937994c481e4fec9ed8aa6/lib/runtime/RefreshUtils.js
+ *
+ * MIT Licensed
+ * Author Michael Mok
+ * Copyright (c) 2019 Michael Mok
+ * https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/0b960573797bf38926937994c481e4fec9ed8aa6/LICENSE
+ */
+
+/* global __webpack_require__ */
+var Refresh = __webpack_require__("../node_modules/.pnpm/react-refresh@0.18.0/node_modules/react-refresh/runtime.js");
+
+/**
+ * Extracts exports from a webpack module object.
+ * @param {string} moduleId A Webpack module ID.
+ * @returns {*} An exports object from the module.
+ */
+function getModuleExports(moduleId) {
+  if (typeof moduleId === 'undefined') {
+    // `moduleId` is unavailable, which indicates that this module is not in the cache,
+    // which means we won't be able to capture any exports,
+    // and thus they cannot be refreshed safely.
+    // These are likely runtime or dynamically generated modules.
+    return {};
+  }
+
+  var maybeModule = __webpack_require__.c[moduleId];
+  if (typeof maybeModule === 'undefined') {
+    // `moduleId` is available but the module in cache is unavailable,
+    // which indicates the module is somehow corrupted (e.g. broken Webpacak `module` globals).
+    // We will warn the user (as this is likely a mistake) and assume they cannot be refreshed.
+    console.warn(
+      '[React Refresh] Failed to get exports for module: ' + moduleId + '.',
+    );
+    return {};
+  }
+
+  var exportsOrPromise = maybeModule.exports;
+  if (typeof Promise !== 'undefined' && exportsOrPromise instanceof Promise) {
+    return exportsOrPromise.then(function (exports) {
+      return exports;
+    });
+  }
+  return exportsOrPromise;
+}
+
+/**
+ * Calculates the signature of a React refresh boundary.
+ * If this signature changes, it's unsafe to accept the boundary.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/907d6af22ac6ebe58572be418e9253a90665ecbd/packages/metro/src/lib/polyfills/require.js#L795-L816).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @returns {string[]} A React refresh boundary signature array.
+ */
+function getReactRefreshBoundarySignature(moduleExports) {
+  var signature = [];
+  signature.push(Refresh.getFamilyByType(moduleExports));
+
+  if (moduleExports == null || typeof moduleExports !== 'object') {
+    // Exit if we can't iterate over exports.
+    return signature;
+  }
+
+  for (var key in moduleExports) {
+    if (key === '__esModule') {
+      continue;
+    }
+
+    signature.push(key);
+    signature.push(Refresh.getFamilyByType(moduleExports[key]));
+  }
+
+  return signature;
+}
+
+/**
+ * Creates a helper that performs a delayed React refresh.
+ * @returns {function(function(): void): void} A debounced React refresh function.
+ */
+function createDebounceUpdate() {
+  /**
+   * A cached setTimeout handler.
+   * @type {number | undefined}
+   */
+  var refreshTimeout;
+
+  /**
+   * Performs react refresh on a delay and clears the error overlay.
+   * @param {function(): void} callback
+   * @returns {void}
+   */
+  function enqueueUpdate(callback) {
+    if (typeof refreshTimeout === 'undefined') {
+      refreshTimeout = setTimeout(function () {
+        refreshTimeout = undefined;
+        Refresh.performReactRefresh();
+        callback();
+      }, 30);
+    }
+  }
+
+  return enqueueUpdate;
+}
+
+/**
+ * Checks if all exports are likely a React component.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/febdba2383113c88296c61e28e4ef6a7f4939fda/packages/metro/src/lib/polyfills/require.js#L748-L774).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @returns {boolean} Whether the exports are React component like.
+ */
+function isReactRefreshBoundary(moduleExports) {
+  if (Refresh.isLikelyComponentType(moduleExports)) {
+    return true;
+  }
+  if (
+    moduleExports === undefined ||
+    moduleExports === null ||
+    typeof moduleExports !== 'object'
+  ) {
+    // Exit if we can't iterate over exports.
+    return false;
+  }
+
+  var hasExports = false;
+  var areAllExportsComponents = true;
+  for (var key in moduleExports) {
+    hasExports = true;
+
+    // This is the ES Module indicator flag
+    if (key === '__esModule') {
+      continue;
+    }
+
+    // We can (and have to) safely execute getters here,
+    // as Webpack manually assigns harmony exports to getters,
+    // without any side-effects attached.
+    // Ref: https://github.com/webpack/webpack/blob/b93048643fe74de2a6931755911da1212df55897/lib/MainTemplate.js#L281
+    var exportValue = moduleExports[key];
+    if (!Refresh.isLikelyComponentType(exportValue)) {
+      areAllExportsComponents = false;
+    }
+  }
+
+  return hasExports && areAllExportsComponents;
+}
+
+/**
+ * Checks if exports are likely a React component and registers them.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/febdba2383113c88296c61e28e4ef6a7f4939fda/packages/metro/src/lib/polyfills/require.js#L818-L835).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @param {string} moduleId A Webpack module ID.
+ * @returns {void}
+ */
+function registerExportsForReactRefresh(moduleExports, moduleId) {
+  if (Refresh.isLikelyComponentType(moduleExports)) {
+    // Register module.exports if it is likely a component
+    Refresh.register(moduleExports, moduleId + ' %exports%');
+  }
+
+  if (
+    moduleExports === undefined ||
+    moduleExports === null ||
+    typeof moduleExports !== 'object'
+  ) {
+    // Exit if we can't iterate over the exports.
+    return;
+  }
+
+  for (var key in moduleExports) {
+    // Skip registering the ES Module indicator
+    if (key === '__esModule') {
+      continue;
+    }
+
+    var exportValue = moduleExports[key];
+    if (Refresh.isLikelyComponentType(exportValue)) {
+      var typeID = moduleId + ' %exports% ' + key;
+      Refresh.register(exportValue, typeID);
+    }
+  }
+}
+
+/**
+ * Compares previous and next module objects to check for mutated boundaries.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/907d6af22ac6ebe58572be418e9253a90665ecbd/packages/metro/src/lib/polyfills/require.js#L776-L792).
+ * @param {*} prevExports The current Webpack module exports object.
+ * @param {*} nextExports The next Webpack module exports object.
+ * @returns {boolean} Whether the React refresh boundary should be invalidated.
+ */
+function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
+  var prevSignature = getReactRefreshBoundarySignature(prevExports);
+  var nextSignature = getReactRefreshBoundarySignature(nextExports);
+
+  if (prevSignature.length !== nextSignature.length) {
+    return true;
+  }
+
+  for (var i = 0; i < nextSignature.length; i += 1) {
+    if (prevSignature[i] !== nextSignature[i]) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+var enqueueUpdate = createDebounceUpdate();
+
+function executeRuntime(
+  moduleExports,
+  moduleId,
+  webpackHot,
+  refreshOverlay,
+  isTest,
+) {
+  registerExportsForReactRefresh(moduleExports, moduleId);
+
+  if (webpackHot) {
+    var isHotUpdate = !!webpackHot.data;
+    var prevExports;
+    if (isHotUpdate) {
+      prevExports = webpackHot.data.prevExports;
+    }
+
+    if (isReactRefreshBoundary(moduleExports)) {
+      webpackHot.dispose(
+        /**
+         * A callback to performs a full refresh if React has unrecoverable errors,
+         * and also caches the to-be-disposed module.
+         * @param {*} data A hot module data object from Webpack HMR.
+         * @returns {void}
+         */
+        function hotDisposeCallback(data) {
+          // We have to mutate the data object to get data registered and cached
+          data.prevExports = moduleExports;
+        },
+      );
+      webpackHot.accept(
+        /**
+         * An error handler to allow self-recovering behaviours.
+         * @param {Error} error An error occurred during evaluation of a module.
+         * @returns {void}
+         */
+        function hotErrorHandler(error) {
+          console.error(error);
+          if (
+            false
+          ) {}
+
+          if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
+            refreshOverlay.handleRuntimeError(error);
+          }
+
+          if (typeof isTest !== 'undefined' && isTest) {
+            if (window.onHotAcceptError) {
+              window.onHotAcceptError(error.message);
+            }
+          }
+
+          __webpack_require__.c[moduleId].hot.accept(hotErrorHandler);
+        },
+      );
+
+      if (isHotUpdate) {
+        if (
+          isReactRefreshBoundary(prevExports) &&
+          shouldInvalidateReactRefreshBoundary(prevExports, moduleExports)
+        ) {
+          webpackHot.invalidate();
+        } else {
+          enqueueUpdate(
+            /**
+             * A function to dismiss the error overlay after performing React refresh.
+             * @returns {void}
+             */
+            function updateCallback() {
+              if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
+                refreshOverlay.clearRuntimeErrors();
+              }
+            },
+          );
+        }
+      }
+    } else {
+      if (isHotUpdate && typeof prevExports !== 'undefined') {
+        webpackHot.invalidate();
+      }
+    }
+  }
+}
+
+function isUnrecoverableRuntimeError(error) {
+  return error.message.startsWith('RuntimeError: factory is undefined');
+}
+
+module.exports = Object.freeze({
+  enqueueUpdate: enqueueUpdate,
+  executeRuntime: executeRuntime,
+  getModuleExports: getModuleExports,
+  isReactRefreshBoundary: isReactRefreshBoundary,
+  shouldInvalidateReactRefreshBoundary: shouldInvalidateReactRefreshBoundary,
+  registerExportsForReactRefresh: registerExportsForReactRefresh,
+});
 
 
 },
@@ -31824,6 +34631,2589 @@ exports.highSurrogateTo = 0xdbff;
 //# sourceMappingURL=surrogate-pairs.js.map
 
 },
+"../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs"(__unused_rspack___webpack_module__, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  clsx: () => (clsx),
+  "default": () => (__rspack_default_export)
+});
+function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f)}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* export default */ const __rspack_default_export = (clsx);
+
+},
+"../node_modules/.pnpm/tailwind-merge@2.6.0/node_modules/tailwind-merge/dist/bundle-mjs.mjs"(__unused_rspack___webpack_module__, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  createTailwindMerge: () => (createTailwindMerge),
+  extendTailwindMerge: () => (extendTailwindMerge),
+  fromTheme: () => (fromTheme),
+  getDefaultConfig: () => (getDefaultConfig),
+  mergeConfigs: () => (mergeConfigs),
+  twJoin: () => (twJoin),
+  twMerge: () => (twMerge),
+  validators: () => (validators)
+});
+const CLASS_PART_SEPARATOR = '-';
+const createClassGroupUtils = config => {
+  const classMap = createClassMap(config);
+  const {
+    conflictingClassGroups,
+    conflictingClassGroupModifiers
+  } = config;
+  const getClassGroupId = className => {
+    const classParts = className.split(CLASS_PART_SEPARATOR);
+    // Classes like `-inset-1` produce an empty string as first classPart. We assume that classes for negative values are used correctly and remove it from classParts.
+    if (classParts[0] === '' && classParts.length !== 1) {
+      classParts.shift();
+    }
+    return getGroupRecursive(classParts, classMap) || getGroupIdForArbitraryProperty(className);
+  };
+  const getConflictingClassGroupIds = (classGroupId, hasPostfixModifier) => {
+    const conflicts = conflictingClassGroups[classGroupId] || [];
+    if (hasPostfixModifier && conflictingClassGroupModifiers[classGroupId]) {
+      return [...conflicts, ...conflictingClassGroupModifiers[classGroupId]];
+    }
+    return conflicts;
+  };
+  return {
+    getClassGroupId,
+    getConflictingClassGroupIds
+  };
+};
+const getGroupRecursive = (classParts, classPartObject) => {
+  if (classParts.length === 0) {
+    return classPartObject.classGroupId;
+  }
+  const currentClassPart = classParts[0];
+  const nextClassPartObject = classPartObject.nextPart.get(currentClassPart);
+  const classGroupFromNextClassPart = nextClassPartObject ? getGroupRecursive(classParts.slice(1), nextClassPartObject) : undefined;
+  if (classGroupFromNextClassPart) {
+    return classGroupFromNextClassPart;
+  }
+  if (classPartObject.validators.length === 0) {
+    return undefined;
+  }
+  const classRest = classParts.join(CLASS_PART_SEPARATOR);
+  return classPartObject.validators.find(({
+    validator
+  }) => validator(classRest))?.classGroupId;
+};
+const arbitraryPropertyRegex = /^\[(.+)\]$/;
+const getGroupIdForArbitraryProperty = className => {
+  if (arbitraryPropertyRegex.test(className)) {
+    const arbitraryPropertyClassName = arbitraryPropertyRegex.exec(className)[1];
+    const property = arbitraryPropertyClassName?.substring(0, arbitraryPropertyClassName.indexOf(':'));
+    if (property) {
+      // I use two dots here because one dot is used as prefix for class groups in plugins
+      return 'arbitrary..' + property;
+    }
+  }
+};
+/**
+ * Exported for testing only
+ */
+const createClassMap = config => {
+  const {
+    theme,
+    prefix
+  } = config;
+  const classMap = {
+    nextPart: new Map(),
+    validators: []
+  };
+  const prefixedClassGroupEntries = getPrefixedClassGroupEntries(Object.entries(config.classGroups), prefix);
+  prefixedClassGroupEntries.forEach(([classGroupId, classGroup]) => {
+    processClassesRecursively(classGroup, classMap, classGroupId, theme);
+  });
+  return classMap;
+};
+const processClassesRecursively = (classGroup, classPartObject, classGroupId, theme) => {
+  classGroup.forEach(classDefinition => {
+    if (typeof classDefinition === 'string') {
+      const classPartObjectToEdit = classDefinition === '' ? classPartObject : getPart(classPartObject, classDefinition);
+      classPartObjectToEdit.classGroupId = classGroupId;
+      return;
+    }
+    if (typeof classDefinition === 'function') {
+      if (isThemeGetter(classDefinition)) {
+        processClassesRecursively(classDefinition(theme), classPartObject, classGroupId, theme);
+        return;
+      }
+      classPartObject.validators.push({
+        validator: classDefinition,
+        classGroupId
+      });
+      return;
+    }
+    Object.entries(classDefinition).forEach(([key, classGroup]) => {
+      processClassesRecursively(classGroup, getPart(classPartObject, key), classGroupId, theme);
+    });
+  });
+};
+const getPart = (classPartObject, path) => {
+  let currentClassPartObject = classPartObject;
+  path.split(CLASS_PART_SEPARATOR).forEach(pathPart => {
+    if (!currentClassPartObject.nextPart.has(pathPart)) {
+      currentClassPartObject.nextPart.set(pathPart, {
+        nextPart: new Map(),
+        validators: []
+      });
+    }
+    currentClassPartObject = currentClassPartObject.nextPart.get(pathPart);
+  });
+  return currentClassPartObject;
+};
+const isThemeGetter = func => func.isThemeGetter;
+const getPrefixedClassGroupEntries = (classGroupEntries, prefix) => {
+  if (!prefix) {
+    return classGroupEntries;
+  }
+  return classGroupEntries.map(([classGroupId, classGroup]) => {
+    const prefixedClassGroup = classGroup.map(classDefinition => {
+      if (typeof classDefinition === 'string') {
+        return prefix + classDefinition;
+      }
+      if (typeof classDefinition === 'object') {
+        return Object.fromEntries(Object.entries(classDefinition).map(([key, value]) => [prefix + key, value]));
+      }
+      return classDefinition;
+    });
+    return [classGroupId, prefixedClassGroup];
+  });
+};
+
+// LRU cache inspired from hashlru (https://github.com/dominictarr/hashlru/blob/v1.0.4/index.js) but object replaced with Map to improve performance
+const createLruCache = maxCacheSize => {
+  if (maxCacheSize < 1) {
+    return {
+      get: () => undefined,
+      set: () => {}
+    };
+  }
+  let cacheSize = 0;
+  let cache = new Map();
+  let previousCache = new Map();
+  const update = (key, value) => {
+    cache.set(key, value);
+    cacheSize++;
+    if (cacheSize > maxCacheSize) {
+      cacheSize = 0;
+      previousCache = cache;
+      cache = new Map();
+    }
+  };
+  return {
+    get(key) {
+      let value = cache.get(key);
+      if (value !== undefined) {
+        return value;
+      }
+      if ((value = previousCache.get(key)) !== undefined) {
+        update(key, value);
+        return value;
+      }
+    },
+    set(key, value) {
+      if (cache.has(key)) {
+        cache.set(key, value);
+      } else {
+        update(key, value);
+      }
+    }
+  };
+};
+const IMPORTANT_MODIFIER = '!';
+const createParseClassName = config => {
+  const {
+    separator,
+    experimentalParseClassName
+  } = config;
+  const isSeparatorSingleCharacter = separator.length === 1;
+  const firstSeparatorCharacter = separator[0];
+  const separatorLength = separator.length;
+  // parseClassName inspired by https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
+  const parseClassName = className => {
+    const modifiers = [];
+    let bracketDepth = 0;
+    let modifierStart = 0;
+    let postfixModifierPosition;
+    for (let index = 0; index < className.length; index++) {
+      let currentCharacter = className[index];
+      if (bracketDepth === 0) {
+        if (currentCharacter === firstSeparatorCharacter && (isSeparatorSingleCharacter || className.slice(index, index + separatorLength) === separator)) {
+          modifiers.push(className.slice(modifierStart, index));
+          modifierStart = index + separatorLength;
+          continue;
+        }
+        if (currentCharacter === '/') {
+          postfixModifierPosition = index;
+          continue;
+        }
+      }
+      if (currentCharacter === '[') {
+        bracketDepth++;
+      } else if (currentCharacter === ']') {
+        bracketDepth--;
+      }
+    }
+    const baseClassNameWithImportantModifier = modifiers.length === 0 ? className : className.substring(modifierStart);
+    const hasImportantModifier = baseClassNameWithImportantModifier.startsWith(IMPORTANT_MODIFIER);
+    const baseClassName = hasImportantModifier ? baseClassNameWithImportantModifier.substring(1) : baseClassNameWithImportantModifier;
+    const maybePostfixModifierPosition = postfixModifierPosition && postfixModifierPosition > modifierStart ? postfixModifierPosition - modifierStart : undefined;
+    return {
+      modifiers,
+      hasImportantModifier,
+      baseClassName,
+      maybePostfixModifierPosition
+    };
+  };
+  if (experimentalParseClassName) {
+    return className => experimentalParseClassName({
+      className,
+      parseClassName
+    });
+  }
+  return parseClassName;
+};
+/**
+ * Sorts modifiers according to following schema:
+ * - Predefined modifiers are sorted alphabetically
+ * - When an arbitrary variant appears, it must be preserved which modifiers are before and after it
+ */
+const sortModifiers = modifiers => {
+  if (modifiers.length <= 1) {
+    return modifiers;
+  }
+  const sortedModifiers = [];
+  let unsortedModifiers = [];
+  modifiers.forEach(modifier => {
+    const isArbitraryVariant = modifier[0] === '[';
+    if (isArbitraryVariant) {
+      sortedModifiers.push(...unsortedModifiers.sort(), modifier);
+      unsortedModifiers = [];
+    } else {
+      unsortedModifiers.push(modifier);
+    }
+  });
+  sortedModifiers.push(...unsortedModifiers.sort());
+  return sortedModifiers;
+};
+const createConfigUtils = config => ({
+  cache: createLruCache(config.cacheSize),
+  parseClassName: createParseClassName(config),
+  ...createClassGroupUtils(config)
+});
+const SPLIT_CLASSES_REGEX = /\s+/;
+const mergeClassList = (classList, configUtils) => {
+  const {
+    parseClassName,
+    getClassGroupId,
+    getConflictingClassGroupIds
+  } = configUtils;
+  /**
+   * Set of classGroupIds in following format:
+   * `{importantModifier}{variantModifiers}{classGroupId}`
+   * @example 'float'
+   * @example 'hover:focus:bg-color'
+   * @example 'md:!pr'
+   */
+  const classGroupsInConflict = [];
+  const classNames = classList.trim().split(SPLIT_CLASSES_REGEX);
+  let result = '';
+  for (let index = classNames.length - 1; index >= 0; index -= 1) {
+    const originalClassName = classNames[index];
+    const {
+      modifiers,
+      hasImportantModifier,
+      baseClassName,
+      maybePostfixModifierPosition
+    } = parseClassName(originalClassName);
+    let hasPostfixModifier = Boolean(maybePostfixModifierPosition);
+    let classGroupId = getClassGroupId(hasPostfixModifier ? baseClassName.substring(0, maybePostfixModifierPosition) : baseClassName);
+    if (!classGroupId) {
+      if (!hasPostfixModifier) {
+        // Not a Tailwind class
+        result = originalClassName + (result.length > 0 ? ' ' + result : result);
+        continue;
+      }
+      classGroupId = getClassGroupId(baseClassName);
+      if (!classGroupId) {
+        // Not a Tailwind class
+        result = originalClassName + (result.length > 0 ? ' ' + result : result);
+        continue;
+      }
+      hasPostfixModifier = false;
+    }
+    const variantModifier = sortModifiers(modifiers).join(':');
+    const modifierId = hasImportantModifier ? variantModifier + IMPORTANT_MODIFIER : variantModifier;
+    const classId = modifierId + classGroupId;
+    if (classGroupsInConflict.includes(classId)) {
+      // Tailwind class omitted due to conflict
+      continue;
+    }
+    classGroupsInConflict.push(classId);
+    const conflictGroups = getConflictingClassGroupIds(classGroupId, hasPostfixModifier);
+    for (let i = 0; i < conflictGroups.length; ++i) {
+      const group = conflictGroups[i];
+      classGroupsInConflict.push(modifierId + group);
+    }
+    // Tailwind class not in conflict
+    result = originalClassName + (result.length > 0 ? ' ' + result : result);
+  }
+  return result;
+};
+
+/**
+ * The code in this file is copied from https://github.com/lukeed/clsx and modified to suit the needs of tailwind-merge better.
+ *
+ * Specifically:
+ * - Runtime code from https://github.com/lukeed/clsx/blob/v1.2.1/src/index.js
+ * - TypeScript types from https://github.com/lukeed/clsx/blob/v1.2.1/clsx.d.ts
+ *
+ * Original code has MIT license: Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+ */
+function twJoin() {
+  let index = 0;
+  let argument;
+  let resolvedValue;
+  let string = '';
+  while (index < arguments.length) {
+    if (argument = arguments[index++]) {
+      if (resolvedValue = toValue(argument)) {
+        string && (string += ' ');
+        string += resolvedValue;
+      }
+    }
+  }
+  return string;
+}
+const toValue = mix => {
+  if (typeof mix === 'string') {
+    return mix;
+  }
+  let resolvedValue;
+  let string = '';
+  for (let k = 0; k < mix.length; k++) {
+    if (mix[k]) {
+      if (resolvedValue = toValue(mix[k])) {
+        string && (string += ' ');
+        string += resolvedValue;
+      }
+    }
+  }
+  return string;
+};
+function createTailwindMerge(createConfigFirst, ...createConfigRest) {
+  let configUtils;
+  let cacheGet;
+  let cacheSet;
+  let functionToCall = initTailwindMerge;
+  function initTailwindMerge(classList) {
+    const config = createConfigRest.reduce((previousConfig, createConfigCurrent) => createConfigCurrent(previousConfig), createConfigFirst());
+    configUtils = createConfigUtils(config);
+    cacheGet = configUtils.cache.get;
+    cacheSet = configUtils.cache.set;
+    functionToCall = tailwindMerge;
+    return tailwindMerge(classList);
+  }
+  function tailwindMerge(classList) {
+    const cachedResult = cacheGet(classList);
+    if (cachedResult) {
+      return cachedResult;
+    }
+    const result = mergeClassList(classList, configUtils);
+    cacheSet(classList, result);
+    return result;
+  }
+  return function callTailwindMerge() {
+    return functionToCall(twJoin.apply(null, arguments));
+  };
+}
+const fromTheme = key => {
+  const themeGetter = theme => theme[key] || [];
+  themeGetter.isThemeGetter = true;
+  return themeGetter;
+};
+const arbitraryValueRegex = /^\[(?:([a-z-]+):)?(.+)\]$/i;
+const fractionRegex = /^\d+\/\d+$/;
+const stringLengths = /*#__PURE__*/new Set(['px', 'full', 'screen']);
+const tshirtUnitRegex = /^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/;
+const lengthUnitRegex = /\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)|^0$/;
+const colorFunctionRegex = /^(rgba?|hsla?|hwb|(ok)?(lab|lch))\(.+\)$/;
+// Shadow always begins with x and y offset separated by underscore optionally prepended by inset
+const shadowRegex = /^(inset_)?-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;
+const imageRegex = /^(url|image|image-set|cross-fade|element|(repeating-)?(linear|radial|conic)-gradient)\(.+\)$/;
+const isLength = value => isNumber(value) || stringLengths.has(value) || fractionRegex.test(value);
+const isArbitraryLength = value => getIsArbitraryValue(value, 'length', isLengthOnly);
+const isNumber = value => Boolean(value) && !Number.isNaN(Number(value));
+const isArbitraryNumber = value => getIsArbitraryValue(value, 'number', isNumber);
+const isInteger = value => Boolean(value) && Number.isInteger(Number(value));
+const isPercent = value => value.endsWith('%') && isNumber(value.slice(0, -1));
+const isArbitraryValue = value => arbitraryValueRegex.test(value);
+const isTshirtSize = value => tshirtUnitRegex.test(value);
+const sizeLabels = /*#__PURE__*/new Set(['length', 'size', 'percentage']);
+const isArbitrarySize = value => getIsArbitraryValue(value, sizeLabels, isNever);
+const isArbitraryPosition = value => getIsArbitraryValue(value, 'position', isNever);
+const imageLabels = /*#__PURE__*/new Set(['image', 'url']);
+const isArbitraryImage = value => getIsArbitraryValue(value, imageLabels, isImage);
+const isArbitraryShadow = value => getIsArbitraryValue(value, '', isShadow);
+const isAny = () => true;
+const getIsArbitraryValue = (value, label, testValue) => {
+  const result = arbitraryValueRegex.exec(value);
+  if (result) {
+    if (result[1]) {
+      return typeof label === 'string' ? result[1] === label : label.has(result[1]);
+    }
+    return testValue(result[2]);
+  }
+  return false;
+};
+const isLengthOnly = value =>
+// `colorFunctionRegex` check is necessary because color functions can have percentages in them which which would be incorrectly classified as lengths.
+// For example, `hsl(0 0% 0%)` would be classified as a length without this check.
+// I could also use lookbehind assertion in `lengthUnitRegex` but that isn't supported widely enough.
+lengthUnitRegex.test(value) && !colorFunctionRegex.test(value);
+const isNever = () => false;
+const isShadow = value => shadowRegex.test(value);
+const isImage = value => imageRegex.test(value);
+const validators = /*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  isAny,
+  isArbitraryImage,
+  isArbitraryLength,
+  isArbitraryNumber,
+  isArbitraryPosition,
+  isArbitraryShadow,
+  isArbitrarySize,
+  isArbitraryValue,
+  isInteger,
+  isLength,
+  isNumber,
+  isPercent,
+  isTshirtSize
+}, Symbol.toStringTag, {
+  value: 'Module'
+});
+const getDefaultConfig = () => {
+  const colors = fromTheme('colors');
+  const spacing = fromTheme('spacing');
+  const blur = fromTheme('blur');
+  const brightness = fromTheme('brightness');
+  const borderColor = fromTheme('borderColor');
+  const borderRadius = fromTheme('borderRadius');
+  const borderSpacing = fromTheme('borderSpacing');
+  const borderWidth = fromTheme('borderWidth');
+  const contrast = fromTheme('contrast');
+  const grayscale = fromTheme('grayscale');
+  const hueRotate = fromTheme('hueRotate');
+  const invert = fromTheme('invert');
+  const gap = fromTheme('gap');
+  const gradientColorStops = fromTheme('gradientColorStops');
+  const gradientColorStopPositions = fromTheme('gradientColorStopPositions');
+  const inset = fromTheme('inset');
+  const margin = fromTheme('margin');
+  const opacity = fromTheme('opacity');
+  const padding = fromTheme('padding');
+  const saturate = fromTheme('saturate');
+  const scale = fromTheme('scale');
+  const sepia = fromTheme('sepia');
+  const skew = fromTheme('skew');
+  const space = fromTheme('space');
+  const translate = fromTheme('translate');
+  const getOverscroll = () => ['auto', 'contain', 'none'];
+  const getOverflow = () => ['auto', 'hidden', 'clip', 'visible', 'scroll'];
+  const getSpacingWithAutoAndArbitrary = () => ['auto', isArbitraryValue, spacing];
+  const getSpacingWithArbitrary = () => [isArbitraryValue, spacing];
+  const getLengthWithEmptyAndArbitrary = () => ['', isLength, isArbitraryLength];
+  const getNumberWithAutoAndArbitrary = () => ['auto', isNumber, isArbitraryValue];
+  const getPositions = () => ['bottom', 'center', 'left', 'left-bottom', 'left-top', 'right', 'right-bottom', 'right-top', 'top'];
+  const getLineStyles = () => ['solid', 'dashed', 'dotted', 'double', 'none'];
+  const getBlendModes = () => ['normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'];
+  const getAlign = () => ['start', 'end', 'center', 'between', 'around', 'evenly', 'stretch'];
+  const getZeroAndEmpty = () => ['', '0', isArbitraryValue];
+  const getBreaks = () => ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column'];
+  const getNumberAndArbitrary = () => [isNumber, isArbitraryValue];
+  return {
+    cacheSize: 500,
+    separator: ':',
+    theme: {
+      colors: [isAny],
+      spacing: [isLength, isArbitraryLength],
+      blur: ['none', '', isTshirtSize, isArbitraryValue],
+      brightness: getNumberAndArbitrary(),
+      borderColor: [colors],
+      borderRadius: ['none', '', 'full', isTshirtSize, isArbitraryValue],
+      borderSpacing: getSpacingWithArbitrary(),
+      borderWidth: getLengthWithEmptyAndArbitrary(),
+      contrast: getNumberAndArbitrary(),
+      grayscale: getZeroAndEmpty(),
+      hueRotate: getNumberAndArbitrary(),
+      invert: getZeroAndEmpty(),
+      gap: getSpacingWithArbitrary(),
+      gradientColorStops: [colors],
+      gradientColorStopPositions: [isPercent, isArbitraryLength],
+      inset: getSpacingWithAutoAndArbitrary(),
+      margin: getSpacingWithAutoAndArbitrary(),
+      opacity: getNumberAndArbitrary(),
+      padding: getSpacingWithArbitrary(),
+      saturate: getNumberAndArbitrary(),
+      scale: getNumberAndArbitrary(),
+      sepia: getZeroAndEmpty(),
+      skew: getNumberAndArbitrary(),
+      space: getSpacingWithArbitrary(),
+      translate: getSpacingWithArbitrary()
+    },
+    classGroups: {
+      // Layout
+      /**
+       * Aspect Ratio
+       * @see https://tailwindcss.com/docs/aspect-ratio
+       */
+      aspect: [{
+        aspect: ['auto', 'square', 'video', isArbitraryValue]
+      }],
+      /**
+       * Container
+       * @see https://tailwindcss.com/docs/container
+       */
+      container: ['container'],
+      /**
+       * Columns
+       * @see https://tailwindcss.com/docs/columns
+       */
+      columns: [{
+        columns: [isTshirtSize]
+      }],
+      /**
+       * Break After
+       * @see https://tailwindcss.com/docs/break-after
+       */
+      'break-after': [{
+        'break-after': getBreaks()
+      }],
+      /**
+       * Break Before
+       * @see https://tailwindcss.com/docs/break-before
+       */
+      'break-before': [{
+        'break-before': getBreaks()
+      }],
+      /**
+       * Break Inside
+       * @see https://tailwindcss.com/docs/break-inside
+       */
+      'break-inside': [{
+        'break-inside': ['auto', 'avoid', 'avoid-page', 'avoid-column']
+      }],
+      /**
+       * Box Decoration Break
+       * @see https://tailwindcss.com/docs/box-decoration-break
+       */
+      'box-decoration': [{
+        'box-decoration': ['slice', 'clone']
+      }],
+      /**
+       * Box Sizing
+       * @see https://tailwindcss.com/docs/box-sizing
+       */
+      box: [{
+        box: ['border', 'content']
+      }],
+      /**
+       * Display
+       * @see https://tailwindcss.com/docs/display
+       */
+      display: ['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'table', 'inline-table', 'table-caption', 'table-cell', 'table-column', 'table-column-group', 'table-footer-group', 'table-header-group', 'table-row-group', 'table-row', 'flow-root', 'grid', 'inline-grid', 'contents', 'list-item', 'hidden'],
+      /**
+       * Floats
+       * @see https://tailwindcss.com/docs/float
+       */
+      float: [{
+        float: ['right', 'left', 'none', 'start', 'end']
+      }],
+      /**
+       * Clear
+       * @see https://tailwindcss.com/docs/clear
+       */
+      clear: [{
+        clear: ['left', 'right', 'both', 'none', 'start', 'end']
+      }],
+      /**
+       * Isolation
+       * @see https://tailwindcss.com/docs/isolation
+       */
+      isolation: ['isolate', 'isolation-auto'],
+      /**
+       * Object Fit
+       * @see https://tailwindcss.com/docs/object-fit
+       */
+      'object-fit': [{
+        object: ['contain', 'cover', 'fill', 'none', 'scale-down']
+      }],
+      /**
+       * Object Position
+       * @see https://tailwindcss.com/docs/object-position
+       */
+      'object-position': [{
+        object: [...getPositions(), isArbitraryValue]
+      }],
+      /**
+       * Overflow
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      overflow: [{
+        overflow: getOverflow()
+      }],
+      /**
+       * Overflow X
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      'overflow-x': [{
+        'overflow-x': getOverflow()
+      }],
+      /**
+       * Overflow Y
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      'overflow-y': [{
+        'overflow-y': getOverflow()
+      }],
+      /**
+       * Overscroll Behavior
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      overscroll: [{
+        overscroll: getOverscroll()
+      }],
+      /**
+       * Overscroll Behavior X
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      'overscroll-x': [{
+        'overscroll-x': getOverscroll()
+      }],
+      /**
+       * Overscroll Behavior Y
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      'overscroll-y': [{
+        'overscroll-y': getOverscroll()
+      }],
+      /**
+       * Position
+       * @see https://tailwindcss.com/docs/position
+       */
+      position: ['static', 'fixed', 'absolute', 'relative', 'sticky'],
+      /**
+       * Top / Right / Bottom / Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      inset: [{
+        inset: [inset]
+      }],
+      /**
+       * Right / Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      'inset-x': [{
+        'inset-x': [inset]
+      }],
+      /**
+       * Top / Bottom
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      'inset-y': [{
+        'inset-y': [inset]
+      }],
+      /**
+       * Start
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      start: [{
+        start: [inset]
+      }],
+      /**
+       * End
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      end: [{
+        end: [inset]
+      }],
+      /**
+       * Top
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      top: [{
+        top: [inset]
+      }],
+      /**
+       * Right
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      right: [{
+        right: [inset]
+      }],
+      /**
+       * Bottom
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      bottom: [{
+        bottom: [inset]
+      }],
+      /**
+       * Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      left: [{
+        left: [inset]
+      }],
+      /**
+       * Visibility
+       * @see https://tailwindcss.com/docs/visibility
+       */
+      visibility: ['visible', 'invisible', 'collapse'],
+      /**
+       * Z-Index
+       * @see https://tailwindcss.com/docs/z-index
+       */
+      z: [{
+        z: ['auto', isInteger, isArbitraryValue]
+      }],
+      // Flexbox and Grid
+      /**
+       * Flex Basis
+       * @see https://tailwindcss.com/docs/flex-basis
+       */
+      basis: [{
+        basis: getSpacingWithAutoAndArbitrary()
+      }],
+      /**
+       * Flex Direction
+       * @see https://tailwindcss.com/docs/flex-direction
+       */
+      'flex-direction': [{
+        flex: ['row', 'row-reverse', 'col', 'col-reverse']
+      }],
+      /**
+       * Flex Wrap
+       * @see https://tailwindcss.com/docs/flex-wrap
+       */
+      'flex-wrap': [{
+        flex: ['wrap', 'wrap-reverse', 'nowrap']
+      }],
+      /**
+       * Flex
+       * @see https://tailwindcss.com/docs/flex
+       */
+      flex: [{
+        flex: ['1', 'auto', 'initial', 'none', isArbitraryValue]
+      }],
+      /**
+       * Flex Grow
+       * @see https://tailwindcss.com/docs/flex-grow
+       */
+      grow: [{
+        grow: getZeroAndEmpty()
+      }],
+      /**
+       * Flex Shrink
+       * @see https://tailwindcss.com/docs/flex-shrink
+       */
+      shrink: [{
+        shrink: getZeroAndEmpty()
+      }],
+      /**
+       * Order
+       * @see https://tailwindcss.com/docs/order
+       */
+      order: [{
+        order: ['first', 'last', 'none', isInteger, isArbitraryValue]
+      }],
+      /**
+       * Grid Template Columns
+       * @see https://tailwindcss.com/docs/grid-template-columns
+       */
+      'grid-cols': [{
+        'grid-cols': [isAny]
+      }],
+      /**
+       * Grid Column Start / End
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-start-end': [{
+        col: ['auto', {
+          span: ['full', isInteger, isArbitraryValue]
+        }, isArbitraryValue]
+      }],
+      /**
+       * Grid Column Start
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-start': [{
+        'col-start': getNumberWithAutoAndArbitrary()
+      }],
+      /**
+       * Grid Column End
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-end': [{
+        'col-end': getNumberWithAutoAndArbitrary()
+      }],
+      /**
+       * Grid Template Rows
+       * @see https://tailwindcss.com/docs/grid-template-rows
+       */
+      'grid-rows': [{
+        'grid-rows': [isAny]
+      }],
+      /**
+       * Grid Row Start / End
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-start-end': [{
+        row: ['auto', {
+          span: [isInteger, isArbitraryValue]
+        }, isArbitraryValue]
+      }],
+      /**
+       * Grid Row Start
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-start': [{
+        'row-start': getNumberWithAutoAndArbitrary()
+      }],
+      /**
+       * Grid Row End
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-end': [{
+        'row-end': getNumberWithAutoAndArbitrary()
+      }],
+      /**
+       * Grid Auto Flow
+       * @see https://tailwindcss.com/docs/grid-auto-flow
+       */
+      'grid-flow': [{
+        'grid-flow': ['row', 'col', 'dense', 'row-dense', 'col-dense']
+      }],
+      /**
+       * Grid Auto Columns
+       * @see https://tailwindcss.com/docs/grid-auto-columns
+       */
+      'auto-cols': [{
+        'auto-cols': ['auto', 'min', 'max', 'fr', isArbitraryValue]
+      }],
+      /**
+       * Grid Auto Rows
+       * @see https://tailwindcss.com/docs/grid-auto-rows
+       */
+      'auto-rows': [{
+        'auto-rows': ['auto', 'min', 'max', 'fr', isArbitraryValue]
+      }],
+      /**
+       * Gap
+       * @see https://tailwindcss.com/docs/gap
+       */
+      gap: [{
+        gap: [gap]
+      }],
+      /**
+       * Gap X
+       * @see https://tailwindcss.com/docs/gap
+       */
+      'gap-x': [{
+        'gap-x': [gap]
+      }],
+      /**
+       * Gap Y
+       * @see https://tailwindcss.com/docs/gap
+       */
+      'gap-y': [{
+        'gap-y': [gap]
+      }],
+      /**
+       * Justify Content
+       * @see https://tailwindcss.com/docs/justify-content
+       */
+      'justify-content': [{
+        justify: ['normal', ...getAlign()]
+      }],
+      /**
+       * Justify Items
+       * @see https://tailwindcss.com/docs/justify-items
+       */
+      'justify-items': [{
+        'justify-items': ['start', 'end', 'center', 'stretch']
+      }],
+      /**
+       * Justify Self
+       * @see https://tailwindcss.com/docs/justify-self
+       */
+      'justify-self': [{
+        'justify-self': ['auto', 'start', 'end', 'center', 'stretch']
+      }],
+      /**
+       * Align Content
+       * @see https://tailwindcss.com/docs/align-content
+       */
+      'align-content': [{
+        content: ['normal', ...getAlign(), 'baseline']
+      }],
+      /**
+       * Align Items
+       * @see https://tailwindcss.com/docs/align-items
+       */
+      'align-items': [{
+        items: ['start', 'end', 'center', 'baseline', 'stretch']
+      }],
+      /**
+       * Align Self
+       * @see https://tailwindcss.com/docs/align-self
+       */
+      'align-self': [{
+        self: ['auto', 'start', 'end', 'center', 'stretch', 'baseline']
+      }],
+      /**
+       * Place Content
+       * @see https://tailwindcss.com/docs/place-content
+       */
+      'place-content': [{
+        'place-content': [...getAlign(), 'baseline']
+      }],
+      /**
+       * Place Items
+       * @see https://tailwindcss.com/docs/place-items
+       */
+      'place-items': [{
+        'place-items': ['start', 'end', 'center', 'baseline', 'stretch']
+      }],
+      /**
+       * Place Self
+       * @see https://tailwindcss.com/docs/place-self
+       */
+      'place-self': [{
+        'place-self': ['auto', 'start', 'end', 'center', 'stretch']
+      }],
+      // Spacing
+      /**
+       * Padding
+       * @see https://tailwindcss.com/docs/padding
+       */
+      p: [{
+        p: [padding]
+      }],
+      /**
+       * Padding X
+       * @see https://tailwindcss.com/docs/padding
+       */
+      px: [{
+        px: [padding]
+      }],
+      /**
+       * Padding Y
+       * @see https://tailwindcss.com/docs/padding
+       */
+      py: [{
+        py: [padding]
+      }],
+      /**
+       * Padding Start
+       * @see https://tailwindcss.com/docs/padding
+       */
+      ps: [{
+        ps: [padding]
+      }],
+      /**
+       * Padding End
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pe: [{
+        pe: [padding]
+      }],
+      /**
+       * Padding Top
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pt: [{
+        pt: [padding]
+      }],
+      /**
+       * Padding Right
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pr: [{
+        pr: [padding]
+      }],
+      /**
+       * Padding Bottom
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pb: [{
+        pb: [padding]
+      }],
+      /**
+       * Padding Left
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pl: [{
+        pl: [padding]
+      }],
+      /**
+       * Margin
+       * @see https://tailwindcss.com/docs/margin
+       */
+      m: [{
+        m: [margin]
+      }],
+      /**
+       * Margin X
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mx: [{
+        mx: [margin]
+      }],
+      /**
+       * Margin Y
+       * @see https://tailwindcss.com/docs/margin
+       */
+      my: [{
+        my: [margin]
+      }],
+      /**
+       * Margin Start
+       * @see https://tailwindcss.com/docs/margin
+       */
+      ms: [{
+        ms: [margin]
+      }],
+      /**
+       * Margin End
+       * @see https://tailwindcss.com/docs/margin
+       */
+      me: [{
+        me: [margin]
+      }],
+      /**
+       * Margin Top
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mt: [{
+        mt: [margin]
+      }],
+      /**
+       * Margin Right
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mr: [{
+        mr: [margin]
+      }],
+      /**
+       * Margin Bottom
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mb: [{
+        mb: [margin]
+      }],
+      /**
+       * Margin Left
+       * @see https://tailwindcss.com/docs/margin
+       */
+      ml: [{
+        ml: [margin]
+      }],
+      /**
+       * Space Between X
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-x': [{
+        'space-x': [space]
+      }],
+      /**
+       * Space Between X Reverse
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-x-reverse': ['space-x-reverse'],
+      /**
+       * Space Between Y
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-y': [{
+        'space-y': [space]
+      }],
+      /**
+       * Space Between Y Reverse
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-y-reverse': ['space-y-reverse'],
+      // Sizing
+      /**
+       * Width
+       * @see https://tailwindcss.com/docs/width
+       */
+      w: [{
+        w: ['auto', 'min', 'max', 'fit', 'svw', 'lvw', 'dvw', isArbitraryValue, spacing]
+      }],
+      /**
+       * Min-Width
+       * @see https://tailwindcss.com/docs/min-width
+       */
+      'min-w': [{
+        'min-w': [isArbitraryValue, spacing, 'min', 'max', 'fit']
+      }],
+      /**
+       * Max-Width
+       * @see https://tailwindcss.com/docs/max-width
+       */
+      'max-w': [{
+        'max-w': [isArbitraryValue, spacing, 'none', 'full', 'min', 'max', 'fit', 'prose', {
+          screen: [isTshirtSize]
+        }, isTshirtSize]
+      }],
+      /**
+       * Height
+       * @see https://tailwindcss.com/docs/height
+       */
+      h: [{
+        h: [isArbitraryValue, spacing, 'auto', 'min', 'max', 'fit', 'svh', 'lvh', 'dvh']
+      }],
+      /**
+       * Min-Height
+       * @see https://tailwindcss.com/docs/min-height
+       */
+      'min-h': [{
+        'min-h': [isArbitraryValue, spacing, 'min', 'max', 'fit', 'svh', 'lvh', 'dvh']
+      }],
+      /**
+       * Max-Height
+       * @see https://tailwindcss.com/docs/max-height
+       */
+      'max-h': [{
+        'max-h': [isArbitraryValue, spacing, 'min', 'max', 'fit', 'svh', 'lvh', 'dvh']
+      }],
+      /**
+       * Size
+       * @see https://tailwindcss.com/docs/size
+       */
+      size: [{
+        size: [isArbitraryValue, spacing, 'auto', 'min', 'max', 'fit']
+      }],
+      // Typography
+      /**
+       * Font Size
+       * @see https://tailwindcss.com/docs/font-size
+       */
+      'font-size': [{
+        text: ['base', isTshirtSize, isArbitraryLength]
+      }],
+      /**
+       * Font Smoothing
+       * @see https://tailwindcss.com/docs/font-smoothing
+       */
+      'font-smoothing': ['antialiased', 'subpixel-antialiased'],
+      /**
+       * Font Style
+       * @see https://tailwindcss.com/docs/font-style
+       */
+      'font-style': ['italic', 'not-italic'],
+      /**
+       * Font Weight
+       * @see https://tailwindcss.com/docs/font-weight
+       */
+      'font-weight': [{
+        font: ['thin', 'extralight', 'light', 'normal', 'medium', 'semibold', 'bold', 'extrabold', 'black', isArbitraryNumber]
+      }],
+      /**
+       * Font Family
+       * @see https://tailwindcss.com/docs/font-family
+       */
+      'font-family': [{
+        font: [isAny]
+      }],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-normal': ['normal-nums'],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-ordinal': ['ordinal'],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-slashed-zero': ['slashed-zero'],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-figure': ['lining-nums', 'oldstyle-nums'],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-spacing': ['proportional-nums', 'tabular-nums'],
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-fraction': ['diagonal-fractions', 'stacked-fractions'],
+      /**
+       * Letter Spacing
+       * @see https://tailwindcss.com/docs/letter-spacing
+       */
+      tracking: [{
+        tracking: ['tighter', 'tight', 'normal', 'wide', 'wider', 'widest', isArbitraryValue]
+      }],
+      /**
+       * Line Clamp
+       * @see https://tailwindcss.com/docs/line-clamp
+       */
+      'line-clamp': [{
+        'line-clamp': ['none', isNumber, isArbitraryNumber]
+      }],
+      /**
+       * Line Height
+       * @see https://tailwindcss.com/docs/line-height
+       */
+      leading: [{
+        leading: ['none', 'tight', 'snug', 'normal', 'relaxed', 'loose', isLength, isArbitraryValue]
+      }],
+      /**
+       * List Style Image
+       * @see https://tailwindcss.com/docs/list-style-image
+       */
+      'list-image': [{
+        'list-image': ['none', isArbitraryValue]
+      }],
+      /**
+       * List Style Type
+       * @see https://tailwindcss.com/docs/list-style-type
+       */
+      'list-style-type': [{
+        list: ['none', 'disc', 'decimal', isArbitraryValue]
+      }],
+      /**
+       * List Style Position
+       * @see https://tailwindcss.com/docs/list-style-position
+       */
+      'list-style-position': [{
+        list: ['inside', 'outside']
+      }],
+      /**
+       * Placeholder Color
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/placeholder-color
+       */
+      'placeholder-color': [{
+        placeholder: [colors]
+      }],
+      /**
+       * Placeholder Opacity
+       * @see https://tailwindcss.com/docs/placeholder-opacity
+       */
+      'placeholder-opacity': [{
+        'placeholder-opacity': [opacity]
+      }],
+      /**
+       * Text Alignment
+       * @see https://tailwindcss.com/docs/text-align
+       */
+      'text-alignment': [{
+        text: ['left', 'center', 'right', 'justify', 'start', 'end']
+      }],
+      /**
+       * Text Color
+       * @see https://tailwindcss.com/docs/text-color
+       */
+      'text-color': [{
+        text: [colors]
+      }],
+      /**
+       * Text Opacity
+       * @see https://tailwindcss.com/docs/text-opacity
+       */
+      'text-opacity': [{
+        'text-opacity': [opacity]
+      }],
+      /**
+       * Text Decoration
+       * @see https://tailwindcss.com/docs/text-decoration
+       */
+      'text-decoration': ['underline', 'overline', 'line-through', 'no-underline'],
+      /**
+       * Text Decoration Style
+       * @see https://tailwindcss.com/docs/text-decoration-style
+       */
+      'text-decoration-style': [{
+        decoration: [...getLineStyles(), 'wavy']
+      }],
+      /**
+       * Text Decoration Thickness
+       * @see https://tailwindcss.com/docs/text-decoration-thickness
+       */
+      'text-decoration-thickness': [{
+        decoration: ['auto', 'from-font', isLength, isArbitraryLength]
+      }],
+      /**
+       * Text Underline Offset
+       * @see https://tailwindcss.com/docs/text-underline-offset
+       */
+      'underline-offset': [{
+        'underline-offset': ['auto', isLength, isArbitraryValue]
+      }],
+      /**
+       * Text Decoration Color
+       * @see https://tailwindcss.com/docs/text-decoration-color
+       */
+      'text-decoration-color': [{
+        decoration: [colors]
+      }],
+      /**
+       * Text Transform
+       * @see https://tailwindcss.com/docs/text-transform
+       */
+      'text-transform': ['uppercase', 'lowercase', 'capitalize', 'normal-case'],
+      /**
+       * Text Overflow
+       * @see https://tailwindcss.com/docs/text-overflow
+       */
+      'text-overflow': ['truncate', 'text-ellipsis', 'text-clip'],
+      /**
+       * Text Wrap
+       * @see https://tailwindcss.com/docs/text-wrap
+       */
+      'text-wrap': [{
+        text: ['wrap', 'nowrap', 'balance', 'pretty']
+      }],
+      /**
+       * Text Indent
+       * @see https://tailwindcss.com/docs/text-indent
+       */
+      indent: [{
+        indent: getSpacingWithArbitrary()
+      }],
+      /**
+       * Vertical Alignment
+       * @see https://tailwindcss.com/docs/vertical-align
+       */
+      'vertical-align': [{
+        align: ['baseline', 'top', 'middle', 'bottom', 'text-top', 'text-bottom', 'sub', 'super', isArbitraryValue]
+      }],
+      /**
+       * Whitespace
+       * @see https://tailwindcss.com/docs/whitespace
+       */
+      whitespace: [{
+        whitespace: ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'break-spaces']
+      }],
+      /**
+       * Word Break
+       * @see https://tailwindcss.com/docs/word-break
+       */
+      break: [{
+        break: ['normal', 'words', 'all', 'keep']
+      }],
+      /**
+       * Hyphens
+       * @see https://tailwindcss.com/docs/hyphens
+       */
+      hyphens: [{
+        hyphens: ['none', 'manual', 'auto']
+      }],
+      /**
+       * Content
+       * @see https://tailwindcss.com/docs/content
+       */
+      content: [{
+        content: ['none', isArbitraryValue]
+      }],
+      // Backgrounds
+      /**
+       * Background Attachment
+       * @see https://tailwindcss.com/docs/background-attachment
+       */
+      'bg-attachment': [{
+        bg: ['fixed', 'local', 'scroll']
+      }],
+      /**
+       * Background Clip
+       * @see https://tailwindcss.com/docs/background-clip
+       */
+      'bg-clip': [{
+        'bg-clip': ['border', 'padding', 'content', 'text']
+      }],
+      /**
+       * Background Opacity
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/background-opacity
+       */
+      'bg-opacity': [{
+        'bg-opacity': [opacity]
+      }],
+      /**
+       * Background Origin
+       * @see https://tailwindcss.com/docs/background-origin
+       */
+      'bg-origin': [{
+        'bg-origin': ['border', 'padding', 'content']
+      }],
+      /**
+       * Background Position
+       * @see https://tailwindcss.com/docs/background-position
+       */
+      'bg-position': [{
+        bg: [...getPositions(), isArbitraryPosition]
+      }],
+      /**
+       * Background Repeat
+       * @see https://tailwindcss.com/docs/background-repeat
+       */
+      'bg-repeat': [{
+        bg: ['no-repeat', {
+          repeat: ['', 'x', 'y', 'round', 'space']
+        }]
+      }],
+      /**
+       * Background Size
+       * @see https://tailwindcss.com/docs/background-size
+       */
+      'bg-size': [{
+        bg: ['auto', 'cover', 'contain', isArbitrarySize]
+      }],
+      /**
+       * Background Image
+       * @see https://tailwindcss.com/docs/background-image
+       */
+      'bg-image': [{
+        bg: ['none', {
+          'gradient-to': ['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl']
+        }, isArbitraryImage]
+      }],
+      /**
+       * Background Color
+       * @see https://tailwindcss.com/docs/background-color
+       */
+      'bg-color': [{
+        bg: [colors]
+      }],
+      /**
+       * Gradient Color Stops From Position
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-from-pos': [{
+        from: [gradientColorStopPositions]
+      }],
+      /**
+       * Gradient Color Stops Via Position
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-via-pos': [{
+        via: [gradientColorStopPositions]
+      }],
+      /**
+       * Gradient Color Stops To Position
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-to-pos': [{
+        to: [gradientColorStopPositions]
+      }],
+      /**
+       * Gradient Color Stops From
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-from': [{
+        from: [gradientColorStops]
+      }],
+      /**
+       * Gradient Color Stops Via
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-via': [{
+        via: [gradientColorStops]
+      }],
+      /**
+       * Gradient Color Stops To
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-to': [{
+        to: [gradientColorStops]
+      }],
+      // Borders
+      /**
+       * Border Radius
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      rounded: [{
+        rounded: [borderRadius]
+      }],
+      /**
+       * Border Radius Start
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-s': [{
+        'rounded-s': [borderRadius]
+      }],
+      /**
+       * Border Radius End
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-e': [{
+        'rounded-e': [borderRadius]
+      }],
+      /**
+       * Border Radius Top
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-t': [{
+        'rounded-t': [borderRadius]
+      }],
+      /**
+       * Border Radius Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-r': [{
+        'rounded-r': [borderRadius]
+      }],
+      /**
+       * Border Radius Bottom
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-b': [{
+        'rounded-b': [borderRadius]
+      }],
+      /**
+       * Border Radius Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-l': [{
+        'rounded-l': [borderRadius]
+      }],
+      /**
+       * Border Radius Start Start
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-ss': [{
+        'rounded-ss': [borderRadius]
+      }],
+      /**
+       * Border Radius Start End
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-se': [{
+        'rounded-se': [borderRadius]
+      }],
+      /**
+       * Border Radius End End
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-ee': [{
+        'rounded-ee': [borderRadius]
+      }],
+      /**
+       * Border Radius End Start
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-es': [{
+        'rounded-es': [borderRadius]
+      }],
+      /**
+       * Border Radius Top Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-tl': [{
+        'rounded-tl': [borderRadius]
+      }],
+      /**
+       * Border Radius Top Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-tr': [{
+        'rounded-tr': [borderRadius]
+      }],
+      /**
+       * Border Radius Bottom Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-br': [{
+        'rounded-br': [borderRadius]
+      }],
+      /**
+       * Border Radius Bottom Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-bl': [{
+        'rounded-bl': [borderRadius]
+      }],
+      /**
+       * Border Width
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w': [{
+        border: [borderWidth]
+      }],
+      /**
+       * Border Width X
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-x': [{
+        'border-x': [borderWidth]
+      }],
+      /**
+       * Border Width Y
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-y': [{
+        'border-y': [borderWidth]
+      }],
+      /**
+       * Border Width Start
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-s': [{
+        'border-s': [borderWidth]
+      }],
+      /**
+       * Border Width End
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-e': [{
+        'border-e': [borderWidth]
+      }],
+      /**
+       * Border Width Top
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-t': [{
+        'border-t': [borderWidth]
+      }],
+      /**
+       * Border Width Right
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-r': [{
+        'border-r': [borderWidth]
+      }],
+      /**
+       * Border Width Bottom
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-b': [{
+        'border-b': [borderWidth]
+      }],
+      /**
+       * Border Width Left
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-l': [{
+        'border-l': [borderWidth]
+      }],
+      /**
+       * Border Opacity
+       * @see https://tailwindcss.com/docs/border-opacity
+       */
+      'border-opacity': [{
+        'border-opacity': [opacity]
+      }],
+      /**
+       * Border Style
+       * @see https://tailwindcss.com/docs/border-style
+       */
+      'border-style': [{
+        border: [...getLineStyles(), 'hidden']
+      }],
+      /**
+       * Divide Width X
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-x': [{
+        'divide-x': [borderWidth]
+      }],
+      /**
+       * Divide Width X Reverse
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-x-reverse': ['divide-x-reverse'],
+      /**
+       * Divide Width Y
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-y': [{
+        'divide-y': [borderWidth]
+      }],
+      /**
+       * Divide Width Y Reverse
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-y-reverse': ['divide-y-reverse'],
+      /**
+       * Divide Opacity
+       * @see https://tailwindcss.com/docs/divide-opacity
+       */
+      'divide-opacity': [{
+        'divide-opacity': [opacity]
+      }],
+      /**
+       * Divide Style
+       * @see https://tailwindcss.com/docs/divide-style
+       */
+      'divide-style': [{
+        divide: getLineStyles()
+      }],
+      /**
+       * Border Color
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color': [{
+        border: [borderColor]
+      }],
+      /**
+       * Border Color X
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-x': [{
+        'border-x': [borderColor]
+      }],
+      /**
+       * Border Color Y
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-y': [{
+        'border-y': [borderColor]
+      }],
+      /**
+       * Border Color S
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-s': [{
+        'border-s': [borderColor]
+      }],
+      /**
+       * Border Color E
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-e': [{
+        'border-e': [borderColor]
+      }],
+      /**
+       * Border Color Top
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-t': [{
+        'border-t': [borderColor]
+      }],
+      /**
+       * Border Color Right
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-r': [{
+        'border-r': [borderColor]
+      }],
+      /**
+       * Border Color Bottom
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-b': [{
+        'border-b': [borderColor]
+      }],
+      /**
+       * Border Color Left
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-l': [{
+        'border-l': [borderColor]
+      }],
+      /**
+       * Divide Color
+       * @see https://tailwindcss.com/docs/divide-color
+       */
+      'divide-color': [{
+        divide: [borderColor]
+      }],
+      /**
+       * Outline Style
+       * @see https://tailwindcss.com/docs/outline-style
+       */
+      'outline-style': [{
+        outline: ['', ...getLineStyles()]
+      }],
+      /**
+       * Outline Offset
+       * @see https://tailwindcss.com/docs/outline-offset
+       */
+      'outline-offset': [{
+        'outline-offset': [isLength, isArbitraryValue]
+      }],
+      /**
+       * Outline Width
+       * @see https://tailwindcss.com/docs/outline-width
+       */
+      'outline-w': [{
+        outline: [isLength, isArbitraryLength]
+      }],
+      /**
+       * Outline Color
+       * @see https://tailwindcss.com/docs/outline-color
+       */
+      'outline-color': [{
+        outline: [colors]
+      }],
+      /**
+       * Ring Width
+       * @see https://tailwindcss.com/docs/ring-width
+       */
+      'ring-w': [{
+        ring: getLengthWithEmptyAndArbitrary()
+      }],
+      /**
+       * Ring Width Inset
+       * @see https://tailwindcss.com/docs/ring-width
+       */
+      'ring-w-inset': ['ring-inset'],
+      /**
+       * Ring Color
+       * @see https://tailwindcss.com/docs/ring-color
+       */
+      'ring-color': [{
+        ring: [colors]
+      }],
+      /**
+       * Ring Opacity
+       * @see https://tailwindcss.com/docs/ring-opacity
+       */
+      'ring-opacity': [{
+        'ring-opacity': [opacity]
+      }],
+      /**
+       * Ring Offset Width
+       * @see https://tailwindcss.com/docs/ring-offset-width
+       */
+      'ring-offset-w': [{
+        'ring-offset': [isLength, isArbitraryLength]
+      }],
+      /**
+       * Ring Offset Color
+       * @see https://tailwindcss.com/docs/ring-offset-color
+       */
+      'ring-offset-color': [{
+        'ring-offset': [colors]
+      }],
+      // Effects
+      /**
+       * Box Shadow
+       * @see https://tailwindcss.com/docs/box-shadow
+       */
+      shadow: [{
+        shadow: ['', 'inner', 'none', isTshirtSize, isArbitraryShadow]
+      }],
+      /**
+       * Box Shadow Color
+       * @see https://tailwindcss.com/docs/box-shadow-color
+       */
+      'shadow-color': [{
+        shadow: [isAny]
+      }],
+      /**
+       * Opacity
+       * @see https://tailwindcss.com/docs/opacity
+       */
+      opacity: [{
+        opacity: [opacity]
+      }],
+      /**
+       * Mix Blend Mode
+       * @see https://tailwindcss.com/docs/mix-blend-mode
+       */
+      'mix-blend': [{
+        'mix-blend': [...getBlendModes(), 'plus-lighter', 'plus-darker']
+      }],
+      /**
+       * Background Blend Mode
+       * @see https://tailwindcss.com/docs/background-blend-mode
+       */
+      'bg-blend': [{
+        'bg-blend': getBlendModes()
+      }],
+      // Filters
+      /**
+       * Filter
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/filter
+       */
+      filter: [{
+        filter: ['', 'none']
+      }],
+      /**
+       * Blur
+       * @see https://tailwindcss.com/docs/blur
+       */
+      blur: [{
+        blur: [blur]
+      }],
+      /**
+       * Brightness
+       * @see https://tailwindcss.com/docs/brightness
+       */
+      brightness: [{
+        brightness: [brightness]
+      }],
+      /**
+       * Contrast
+       * @see https://tailwindcss.com/docs/contrast
+       */
+      contrast: [{
+        contrast: [contrast]
+      }],
+      /**
+       * Drop Shadow
+       * @see https://tailwindcss.com/docs/drop-shadow
+       */
+      'drop-shadow': [{
+        'drop-shadow': ['', 'none', isTshirtSize, isArbitraryValue]
+      }],
+      /**
+       * Grayscale
+       * @see https://tailwindcss.com/docs/grayscale
+       */
+      grayscale: [{
+        grayscale: [grayscale]
+      }],
+      /**
+       * Hue Rotate
+       * @see https://tailwindcss.com/docs/hue-rotate
+       */
+      'hue-rotate': [{
+        'hue-rotate': [hueRotate]
+      }],
+      /**
+       * Invert
+       * @see https://tailwindcss.com/docs/invert
+       */
+      invert: [{
+        invert: [invert]
+      }],
+      /**
+       * Saturate
+       * @see https://tailwindcss.com/docs/saturate
+       */
+      saturate: [{
+        saturate: [saturate]
+      }],
+      /**
+       * Sepia
+       * @see https://tailwindcss.com/docs/sepia
+       */
+      sepia: [{
+        sepia: [sepia]
+      }],
+      /**
+       * Backdrop Filter
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/backdrop-filter
+       */
+      'backdrop-filter': [{
+        'backdrop-filter': ['', 'none']
+      }],
+      /**
+       * Backdrop Blur
+       * @see https://tailwindcss.com/docs/backdrop-blur
+       */
+      'backdrop-blur': [{
+        'backdrop-blur': [blur]
+      }],
+      /**
+       * Backdrop Brightness
+       * @see https://tailwindcss.com/docs/backdrop-brightness
+       */
+      'backdrop-brightness': [{
+        'backdrop-brightness': [brightness]
+      }],
+      /**
+       * Backdrop Contrast
+       * @see https://tailwindcss.com/docs/backdrop-contrast
+       */
+      'backdrop-contrast': [{
+        'backdrop-contrast': [contrast]
+      }],
+      /**
+       * Backdrop Grayscale
+       * @see https://tailwindcss.com/docs/backdrop-grayscale
+       */
+      'backdrop-grayscale': [{
+        'backdrop-grayscale': [grayscale]
+      }],
+      /**
+       * Backdrop Hue Rotate
+       * @see https://tailwindcss.com/docs/backdrop-hue-rotate
+       */
+      'backdrop-hue-rotate': [{
+        'backdrop-hue-rotate': [hueRotate]
+      }],
+      /**
+       * Backdrop Invert
+       * @see https://tailwindcss.com/docs/backdrop-invert
+       */
+      'backdrop-invert': [{
+        'backdrop-invert': [invert]
+      }],
+      /**
+       * Backdrop Opacity
+       * @see https://tailwindcss.com/docs/backdrop-opacity
+       */
+      'backdrop-opacity': [{
+        'backdrop-opacity': [opacity]
+      }],
+      /**
+       * Backdrop Saturate
+       * @see https://tailwindcss.com/docs/backdrop-saturate
+       */
+      'backdrop-saturate': [{
+        'backdrop-saturate': [saturate]
+      }],
+      /**
+       * Backdrop Sepia
+       * @see https://tailwindcss.com/docs/backdrop-sepia
+       */
+      'backdrop-sepia': [{
+        'backdrop-sepia': [sepia]
+      }],
+      // Tables
+      /**
+       * Border Collapse
+       * @see https://tailwindcss.com/docs/border-collapse
+       */
+      'border-collapse': [{
+        border: ['collapse', 'separate']
+      }],
+      /**
+       * Border Spacing
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing': [{
+        'border-spacing': [borderSpacing]
+      }],
+      /**
+       * Border Spacing X
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing-x': [{
+        'border-spacing-x': [borderSpacing]
+      }],
+      /**
+       * Border Spacing Y
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing-y': [{
+        'border-spacing-y': [borderSpacing]
+      }],
+      /**
+       * Table Layout
+       * @see https://tailwindcss.com/docs/table-layout
+       */
+      'table-layout': [{
+        table: ['auto', 'fixed']
+      }],
+      /**
+       * Caption Side
+       * @see https://tailwindcss.com/docs/caption-side
+       */
+      caption: [{
+        caption: ['top', 'bottom']
+      }],
+      // Transitions and Animation
+      /**
+       * Tranisition Property
+       * @see https://tailwindcss.com/docs/transition-property
+       */
+      transition: [{
+        transition: ['none', 'all', '', 'colors', 'opacity', 'shadow', 'transform', isArbitraryValue]
+      }],
+      /**
+       * Transition Duration
+       * @see https://tailwindcss.com/docs/transition-duration
+       */
+      duration: [{
+        duration: getNumberAndArbitrary()
+      }],
+      /**
+       * Transition Timing Function
+       * @see https://tailwindcss.com/docs/transition-timing-function
+       */
+      ease: [{
+        ease: ['linear', 'in', 'out', 'in-out', isArbitraryValue]
+      }],
+      /**
+       * Transition Delay
+       * @see https://tailwindcss.com/docs/transition-delay
+       */
+      delay: [{
+        delay: getNumberAndArbitrary()
+      }],
+      /**
+       * Animation
+       * @see https://tailwindcss.com/docs/animation
+       */
+      animate: [{
+        animate: ['none', 'spin', 'ping', 'pulse', 'bounce', isArbitraryValue]
+      }],
+      // Transforms
+      /**
+       * Transform
+       * @see https://tailwindcss.com/docs/transform
+       */
+      transform: [{
+        transform: ['', 'gpu', 'none']
+      }],
+      /**
+       * Scale
+       * @see https://tailwindcss.com/docs/scale
+       */
+      scale: [{
+        scale: [scale]
+      }],
+      /**
+       * Scale X
+       * @see https://tailwindcss.com/docs/scale
+       */
+      'scale-x': [{
+        'scale-x': [scale]
+      }],
+      /**
+       * Scale Y
+       * @see https://tailwindcss.com/docs/scale
+       */
+      'scale-y': [{
+        'scale-y': [scale]
+      }],
+      /**
+       * Rotate
+       * @see https://tailwindcss.com/docs/rotate
+       */
+      rotate: [{
+        rotate: [isInteger, isArbitraryValue]
+      }],
+      /**
+       * Translate X
+       * @see https://tailwindcss.com/docs/translate
+       */
+      'translate-x': [{
+        'translate-x': [translate]
+      }],
+      /**
+       * Translate Y
+       * @see https://tailwindcss.com/docs/translate
+       */
+      'translate-y': [{
+        'translate-y': [translate]
+      }],
+      /**
+       * Skew X
+       * @see https://tailwindcss.com/docs/skew
+       */
+      'skew-x': [{
+        'skew-x': [skew]
+      }],
+      /**
+       * Skew Y
+       * @see https://tailwindcss.com/docs/skew
+       */
+      'skew-y': [{
+        'skew-y': [skew]
+      }],
+      /**
+       * Transform Origin
+       * @see https://tailwindcss.com/docs/transform-origin
+       */
+      'transform-origin': [{
+        origin: ['center', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left', 'top-left', isArbitraryValue]
+      }],
+      // Interactivity
+      /**
+       * Accent Color
+       * @see https://tailwindcss.com/docs/accent-color
+       */
+      accent: [{
+        accent: ['auto', colors]
+      }],
+      /**
+       * Appearance
+       * @see https://tailwindcss.com/docs/appearance
+       */
+      appearance: [{
+        appearance: ['none', 'auto']
+      }],
+      /**
+       * Cursor
+       * @see https://tailwindcss.com/docs/cursor
+       */
+      cursor: [{
+        cursor: ['auto', 'default', 'pointer', 'wait', 'text', 'move', 'help', 'not-allowed', 'none', 'context-menu', 'progress', 'cell', 'crosshair', 'vertical-text', 'alias', 'copy', 'no-drop', 'grab', 'grabbing', 'all-scroll', 'col-resize', 'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize', 'ne-resize', 'nw-resize', 'se-resize', 'sw-resize', 'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize', 'zoom-in', 'zoom-out', isArbitraryValue]
+      }],
+      /**
+       * Caret Color
+       * @see https://tailwindcss.com/docs/just-in-time-mode#caret-color-utilities
+       */
+      'caret-color': [{
+        caret: [colors]
+      }],
+      /**
+       * Pointer Events
+       * @see https://tailwindcss.com/docs/pointer-events
+       */
+      'pointer-events': [{
+        'pointer-events': ['none', 'auto']
+      }],
+      /**
+       * Resize
+       * @see https://tailwindcss.com/docs/resize
+       */
+      resize: [{
+        resize: ['none', 'y', 'x', '']
+      }],
+      /**
+       * Scroll Behavior
+       * @see https://tailwindcss.com/docs/scroll-behavior
+       */
+      'scroll-behavior': [{
+        scroll: ['auto', 'smooth']
+      }],
+      /**
+       * Scroll Margin
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-m': [{
+        'scroll-m': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin X
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mx': [{
+        'scroll-mx': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Y
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-my': [{
+        'scroll-my': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Start
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-ms': [{
+        'scroll-ms': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin End
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-me': [{
+        'scroll-me': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Top
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mt': [{
+        'scroll-mt': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Right
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mr': [{
+        'scroll-mr': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Bottom
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mb': [{
+        'scroll-mb': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Margin Left
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-ml': [{
+        'scroll-ml': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-p': [{
+        'scroll-p': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding X
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-px': [{
+        'scroll-px': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Y
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-py': [{
+        'scroll-py': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Start
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-ps': [{
+        'scroll-ps': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding End
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pe': [{
+        'scroll-pe': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Top
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pt': [{
+        'scroll-pt': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Right
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pr': [{
+        'scroll-pr': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Bottom
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pb': [{
+        'scroll-pb': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Padding Left
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pl': [{
+        'scroll-pl': getSpacingWithArbitrary()
+      }],
+      /**
+       * Scroll Snap Align
+       * @see https://tailwindcss.com/docs/scroll-snap-align
+       */
+      'snap-align': [{
+        snap: ['start', 'end', 'center', 'align-none']
+      }],
+      /**
+       * Scroll Snap Stop
+       * @see https://tailwindcss.com/docs/scroll-snap-stop
+       */
+      'snap-stop': [{
+        snap: ['normal', 'always']
+      }],
+      /**
+       * Scroll Snap Type
+       * @see https://tailwindcss.com/docs/scroll-snap-type
+       */
+      'snap-type': [{
+        snap: ['none', 'x', 'y', 'both']
+      }],
+      /**
+       * Scroll Snap Type Strictness
+       * @see https://tailwindcss.com/docs/scroll-snap-type
+       */
+      'snap-strictness': [{
+        snap: ['mandatory', 'proximity']
+      }],
+      /**
+       * Touch Action
+       * @see https://tailwindcss.com/docs/touch-action
+       */
+      touch: [{
+        touch: ['auto', 'none', 'manipulation']
+      }],
+      /**
+       * Touch Action X
+       * @see https://tailwindcss.com/docs/touch-action
+       */
+      'touch-x': [{
+        'touch-pan': ['x', 'left', 'right']
+      }],
+      /**
+       * Touch Action Y
+       * @see https://tailwindcss.com/docs/touch-action
+       */
+      'touch-y': [{
+        'touch-pan': ['y', 'up', 'down']
+      }],
+      /**
+       * Touch Action Pinch Zoom
+       * @see https://tailwindcss.com/docs/touch-action
+       */
+      'touch-pz': ['touch-pinch-zoom'],
+      /**
+       * User Select
+       * @see https://tailwindcss.com/docs/user-select
+       */
+      select: [{
+        select: ['none', 'text', 'all', 'auto']
+      }],
+      /**
+       * Will Change
+       * @see https://tailwindcss.com/docs/will-change
+       */
+      'will-change': [{
+        'will-change': ['auto', 'scroll', 'contents', 'transform', isArbitraryValue]
+      }],
+      // SVG
+      /**
+       * Fill
+       * @see https://tailwindcss.com/docs/fill
+       */
+      fill: [{
+        fill: [colors, 'none']
+      }],
+      /**
+       * Stroke Width
+       * @see https://tailwindcss.com/docs/stroke-width
+       */
+      'stroke-w': [{
+        stroke: [isLength, isArbitraryLength, isArbitraryNumber]
+      }],
+      /**
+       * Stroke
+       * @see https://tailwindcss.com/docs/stroke
+       */
+      stroke: [{
+        stroke: [colors, 'none']
+      }],
+      // Accessibility
+      /**
+       * Screen Readers
+       * @see https://tailwindcss.com/docs/screen-readers
+       */
+      sr: ['sr-only', 'not-sr-only'],
+      /**
+       * Forced Color Adjust
+       * @see https://tailwindcss.com/docs/forced-color-adjust
+       */
+      'forced-color-adjust': [{
+        'forced-color-adjust': ['auto', 'none']
+      }]
+    },
+    conflictingClassGroups: {
+      overflow: ['overflow-x', 'overflow-y'],
+      overscroll: ['overscroll-x', 'overscroll-y'],
+      inset: ['inset-x', 'inset-y', 'start', 'end', 'top', 'right', 'bottom', 'left'],
+      'inset-x': ['right', 'left'],
+      'inset-y': ['top', 'bottom'],
+      flex: ['basis', 'grow', 'shrink'],
+      gap: ['gap-x', 'gap-y'],
+      p: ['px', 'py', 'ps', 'pe', 'pt', 'pr', 'pb', 'pl'],
+      px: ['pr', 'pl'],
+      py: ['pt', 'pb'],
+      m: ['mx', 'my', 'ms', 'me', 'mt', 'mr', 'mb', 'ml'],
+      mx: ['mr', 'ml'],
+      my: ['mt', 'mb'],
+      size: ['w', 'h'],
+      'font-size': ['leading'],
+      'fvn-normal': ['fvn-ordinal', 'fvn-slashed-zero', 'fvn-figure', 'fvn-spacing', 'fvn-fraction'],
+      'fvn-ordinal': ['fvn-normal'],
+      'fvn-slashed-zero': ['fvn-normal'],
+      'fvn-figure': ['fvn-normal'],
+      'fvn-spacing': ['fvn-normal'],
+      'fvn-fraction': ['fvn-normal'],
+      'line-clamp': ['display', 'overflow'],
+      rounded: ['rounded-s', 'rounded-e', 'rounded-t', 'rounded-r', 'rounded-b', 'rounded-l', 'rounded-ss', 'rounded-se', 'rounded-ee', 'rounded-es', 'rounded-tl', 'rounded-tr', 'rounded-br', 'rounded-bl'],
+      'rounded-s': ['rounded-ss', 'rounded-es'],
+      'rounded-e': ['rounded-se', 'rounded-ee'],
+      'rounded-t': ['rounded-tl', 'rounded-tr'],
+      'rounded-r': ['rounded-tr', 'rounded-br'],
+      'rounded-b': ['rounded-br', 'rounded-bl'],
+      'rounded-l': ['rounded-tl', 'rounded-bl'],
+      'border-spacing': ['border-spacing-x', 'border-spacing-y'],
+      'border-w': ['border-w-s', 'border-w-e', 'border-w-t', 'border-w-r', 'border-w-b', 'border-w-l'],
+      'border-w-x': ['border-w-r', 'border-w-l'],
+      'border-w-y': ['border-w-t', 'border-w-b'],
+      'border-color': ['border-color-s', 'border-color-e', 'border-color-t', 'border-color-r', 'border-color-b', 'border-color-l'],
+      'border-color-x': ['border-color-r', 'border-color-l'],
+      'border-color-y': ['border-color-t', 'border-color-b'],
+      'scroll-m': ['scroll-mx', 'scroll-my', 'scroll-ms', 'scroll-me', 'scroll-mt', 'scroll-mr', 'scroll-mb', 'scroll-ml'],
+      'scroll-mx': ['scroll-mr', 'scroll-ml'],
+      'scroll-my': ['scroll-mt', 'scroll-mb'],
+      'scroll-p': ['scroll-px', 'scroll-py', 'scroll-ps', 'scroll-pe', 'scroll-pt', 'scroll-pr', 'scroll-pb', 'scroll-pl'],
+      'scroll-px': ['scroll-pr', 'scroll-pl'],
+      'scroll-py': ['scroll-pt', 'scroll-pb'],
+      touch: ['touch-x', 'touch-y', 'touch-pz'],
+      'touch-x': ['touch'],
+      'touch-y': ['touch'],
+      'touch-pz': ['touch']
+    },
+    conflictingClassGroupModifiers: {
+      'font-size': ['leading']
+    }
+  };
+};
+
+/**
+ * @param baseConfig Config where other config will be merged into. This object will be mutated.
+ * @param configExtension Partial config to merge into the `baseConfig`.
+ */
+const mergeConfigs = (baseConfig, {
+  cacheSize,
+  prefix,
+  separator,
+  experimentalParseClassName,
+  extend = {},
+  override = {}
+}) => {
+  overrideProperty(baseConfig, 'cacheSize', cacheSize);
+  overrideProperty(baseConfig, 'prefix', prefix);
+  overrideProperty(baseConfig, 'separator', separator);
+  overrideProperty(baseConfig, 'experimentalParseClassName', experimentalParseClassName);
+  for (const configKey in override) {
+    overrideConfigProperties(baseConfig[configKey], override[configKey]);
+  }
+  for (const key in extend) {
+    mergeConfigProperties(baseConfig[key], extend[key]);
+  }
+  return baseConfig;
+};
+const overrideProperty = (baseObject, overrideKey, overrideValue) => {
+  if (overrideValue !== undefined) {
+    baseObject[overrideKey] = overrideValue;
+  }
+};
+const overrideConfigProperties = (baseObject, overrideObject) => {
+  if (overrideObject) {
+    for (const key in overrideObject) {
+      overrideProperty(baseObject, key, overrideObject[key]);
+    }
+  }
+};
+const mergeConfigProperties = (baseObject, mergeObject) => {
+  if (mergeObject) {
+    for (const key in mergeObject) {
+      const mergeValue = mergeObject[key];
+      if (mergeValue !== undefined) {
+        baseObject[key] = (baseObject[key] || []).concat(mergeValue);
+      }
+    }
+  }
+};
+const extendTailwindMerge = (configExtension, ...createConfig) => typeof configExtension === 'function' ? createTailwindMerge(getDefaultConfig, configExtension, ...createConfig) : createTailwindMerge(() => mergeConfigs(getDefaultConfig(), configExtension), ...createConfig);
+const twMerge = /*#__PURE__*/createTailwindMerge(getDefaultConfig);
+
+//# sourceMappingURL=bundle-mjs.mjs.map
+
+
+},
 
 });
 // The module cache
@@ -31905,7 +37295,7 @@ __webpack_require__.hu = (chunkId) => ('' + chunkId + '.' + __webpack_require__.
 })();
 // webpack/runtime/get_full_hash
 (() => {
-__webpack_require__.h = () => ("1e341c4d72da7071")
+__webpack_require__.h = () => ("94e78115d82e782f")
 })();
 // webpack/runtime/get_main_filename/update manifest
 (() => {
@@ -32382,6 +37772,10 @@ __webpack_require__.nmd = (module) => {
   if (!module.children) module.children = [];
   return module;
 };
+})();
+// webpack/runtime/nonce
+(() => {
+__webpack_require__.nc = undefined;
 })();
 // webpack/runtime/auto_public_path
 (() => {
@@ -32888,5 +38282,6 @@ __webpack_require__.hmrC.module = function (
 // module cache are used so entry inlining is disabled
 // startup
 // Load entry module and return exports
+__webpack_require__("../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js");
 __webpack_require__("../node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js?path=/react-demo/hot-middleware");
 var __webpack_exports__ = __webpack_require__("./src/entry.client.tsx");
