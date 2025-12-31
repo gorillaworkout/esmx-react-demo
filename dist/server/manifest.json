@@ -4,7 +4,7 @@
         "src/entry.server": {
             "name": "src/entry.server",
             "pkg": false,
-            "file": "src/entry.server.mjs",
+            "file": "src/entry.server.c0b61a8c.final.mjs",
             "identifier": "react-demo/src/entry.server"
         }
     },
@@ -12,12 +12,12 @@
         "": {}
     },
     "files": [
-        "src/entry.server.mjs"
+        "src/entry.server.c0b61a8c.final.mjs"
     ],
     "chunks": {
         "react-demo@src/entry.server.tsx": {
             "name": "react-demo@src/entry.server.tsx",
-            "js": "src/entry.server.mjs",
+            "js": "src/entry.server.c0b61a8c.final.mjs",
             "css": [],
             "resources": []
         }

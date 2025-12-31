@@ -3,16 +3,19 @@ import { renderToString } from 'react-dom/server';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
-  const { app } = createApp();
+  // Get pathname from params URL
+  const url = (rc.params?.url as string) || '/';
+  const pathname = new URL(url, 'http://localhost').pathname;
+  const { app } = createApp(pathname);
   const html = renderToString(app);
 
   await rc.commit();
 
   rc.html = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     ${rc.preload()}
-    <title>Esmx 快速开始 - React</title>
+    <title>EconomicHub - Financial News & Economic Calendar</title>
     ${rc.css()}
 </head>
 <body>

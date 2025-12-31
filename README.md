@@ -1,104 +1,23 @@
-# React Demo
+# React Demo - EconomicHub
 
-A modern React application built with Esmx framework, featuring Tailwind CSS and shadcn/ui components.
+A modern React application built with Esmx framework, featuring Economic Calendar and NewsFlash.
 
-## 📦 Tech Stack
+## Build Configuration for Vercel
 
-- **Framework**: [Esmx](https://esmx.dev) - Next generation micro-frontend framework
-- **UI Framework**: React 19
-- **Styling**: Tailwind CSS
-- **Components**: shadcn/ui
-- **Build Tool**: Rspack
-- **Type Checking**: TypeScript
+This project uses pnpm workspace. For Vercel deployment:
 
-## 🚀 Quick Start
+1. **Enable pnpm in Vercel**: Go to Project Settings > General > Install Command and set it to `pnpm install`
+2. **Or use the vercel.json** configuration file which is already set up
 
-### Install Dependencies
+## Build Commands
 
-```bash
-pnpm install
-```
+- `npm run dev` - Start development server
+- `npm run build` - Build for production (includes type declarations)
+- `npm run build:dts` - Generate TypeScript declaration files
+- `npm run build:ssr` - Build SSR bundle
+- `npm run preview` - Preview production build
+- `npm run start` - Start production server
 
-### Development Environment
+## Dependencies
 
-```bash
-pnpm dev
-```
-
-Visit http://localhost:3000 to see the development environment.
-
-### Production Build
-
-```bash
-pnpm build
-```
-
-### Start Production Server
-
-```bash
-pnpm start
-```
-
-## 📁 Project Structure
-
-```
-react-demo/
-├── src/
-│   ├── app.tsx                    # Root app component
-│   ├── create-app.tsx             # App factory
-│   ├── entry.client.tsx           # Client entry
-│   ├── entry.server.tsx           # Server entry
-│   ├── entry.node.ts              # Node config
-│   │
-│   ├── pages/                     # 📄 Pages
-│   │   ├── home/
-│   │   │   └── index.tsx
-│   │   └── about/
-│   │       └── index.tsx
-│   │
-│   ├── components/                # 🧩 Components
-│   │   ├── layout/                # Layout components
-│   │   │   ├── header.tsx
-│   │   │   ├── footer.tsx
-│   │   │   └── index.ts
-│   │   └── ui/                    # UI primitives (shadcn/ui)
-│   │       ├── button.tsx
-│   │       ├── card.tsx
-│   │       └── index.ts
-│   │
-│   ├── lib/                       # 🛠️ Utilities
-│   │   ├── utils.ts               # cn() helper for Tailwind
-│   │   └── index.ts
-│   │
-│   ├── hooks/                     # 🎣 Custom React hooks
-│   ├── utils/                     # 🔧 Utility functions
-│   ├── types/                     # 📝 TypeScript types
-│   ├── styles/                    # 🎨 Global styles
-│   │   └── globals.css            # Tailwind CSS
-│   └── assets/                    # 🖼️ Static assets
-│
-├── components.json                # shadcn/ui config
-├── tailwind.config.js             # Tailwind config
-├── postcss.config.js              # PostCSS config
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## 🎨 Adding shadcn/ui Components
-
-To add more shadcn/ui components, you can use the CLI:
-
-```bash
-npx shadcn@latest add [component-name]
-```
-
-Or manually copy components from [shadcn/ui](https://ui.shadcn.com/docs/components).
-
-## 📚 Additional Resources
-
-- [Esmx Documentation](https://esmx.dev)
-- [React Documentation](https://react.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com)
-- [shadcn/ui Documentation](https://ui.shadcn.com)
-
+This project uses workspace dependencies (`@esmx/core` and `@esmx/rspack`). Make sure these are available in your npm registry or use pnpm workspace.

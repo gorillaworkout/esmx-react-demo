@@ -4,7 +4,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
-            "file": "src/entry.client.mjs",
+            "file": "src/entry.client.528aa4a8.final.mjs",
             "identifier": "react-demo/src/entry.client"
         }
     },
@@ -12,12 +12,12 @@
         "": {}
     },
     "files": [
-        "src/entry.client.mjs"
+        "src/entry.client.528aa4a8.final.mjs"
     ],
     "chunks": {
-        "react-demo@../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js": {
-            "name": "react-demo@../node_modules/.pnpm/@rspack+plugin-react-refresh@1.5.2_react-refresh@0.18.0_webpack-hot-middleware@2.26.1/node_modules/@rspack/plugin-react-refresh/client/reactRefreshEntry.js",
-            "js": "src/entry.client.7f7c540c6a543781.hot-update.mjs",
+        "react-demo@src/entry.client.tsx": {
+            "name": "react-demo@src/entry.client.tsx",
+            "js": "src/entry.client.528aa4a8.final.mjs",
             "css": [],
             "resources": []
         }

@@ -92,3 +92,5 @@ Thumbs.db
 *.hot-update.*
 hot-update.*
 
+
+.vercel

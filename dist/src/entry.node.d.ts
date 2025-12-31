@@ -15,3 +15,4 @@ declare const _default: {
     server(esmx: import("@esmx/core").Esmx): Promise<void>;
 };
 export default _default;
+//# sourceMappingURL=entry.node.d.ts.map
