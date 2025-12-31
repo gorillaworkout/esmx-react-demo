@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "dev": "esmx dev",
-        "build": "npm run build:dts && npm run build:ssr",
+        "build": "pnpm run build:dts && pnpm run build:ssr",
         "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
         "preview": "esmx preview",
