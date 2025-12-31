@@ -1,0 +1,25 @@
+{
+    "name": "react-demo",
+    "exports": {
+        "src/entry.server": {
+            "name": "src/entry.server",
+            "pkg": false,
+            "file": "src/entry.server.mjs",
+            "identifier": "react-demo/src/entry.server"
+        }
+    },
+    "scopes": {
+        "": {}
+    },
+    "files": [
+        "src/entry.server.mjs"
+    ],
+    "chunks": {
+        "react-demo@src/entry.server.tsx": {
+            "name": "react-demo@src/entry.server.tsx",
+            "js": "src/entry.server.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

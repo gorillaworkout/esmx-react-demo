@@ -1,0 +1,25 @@
+{
+    "name": "react-demo",
+    "exports": {
+        "src/entry.client": {
+            "name": "src/entry.client",
+            "pkg": false,
+            "file": "src/entry.client.mjs",
+            "identifier": "react-demo/src/entry.client"
+        }
+    },
+    "scopes": {
+        "": {}
+    },
+    "files": [
+        "src/entry.client.mjs"
+    ],
+    "chunks": {
+        "react-demo@../node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js": {
+            "name": "react-demo@../node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js",
+            "js": "src/entry.client.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

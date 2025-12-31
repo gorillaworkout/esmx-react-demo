@@ -1,0 +1,27 @@
+{
+    "name": "react-demo",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+      "dev": "esmx dev",
+      "build": "npm run build:dts && npm run build:ssr",
+      "build:ssr": "esmx build",
+      "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
+      "preview": "esmx preview",
+      "start": "esmx start"
+    },
+    "dependencies": {
+      "@esmx/core": "latest",
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
+    "devDependencies": {
+      "@esmx/rspack": "latest",
+      "@rspack/plugin-react-refresh": "^1.5.2",
+      "@types/node": "^24.0.0",
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0",
+      "typescript": "^5.9.3"
+    }
+  }
