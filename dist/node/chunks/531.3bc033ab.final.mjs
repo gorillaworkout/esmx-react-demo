@@ -1,0 +1,1 @@
+export const __rspack_esm_id="531";export const __rspack_esm_ids=["531"];export const __webpack_modules__={246(_){_.exports=import("tailwindcss").then(function(_){return _})}};

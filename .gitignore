@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Build outputs
-dist/
+# dist/  # Uncomment to commit dist for Vercel deployment
 build/
 *.tsbuildinfo
 

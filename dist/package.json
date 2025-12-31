@@ -12,12 +12,12 @@
         "start": "esmx start"
     },
     "dependencies": {
-        "@esmx/core": "latest",
+        "@esmx/core": "workspace:*",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"
     },
     "devDependencies": {
-        "@esmx/rspack": "latest",
+        "@esmx/rspack": "workspace:*",
         "@rspack/plugin-react-refresh": "^1.5.2",
         "@types/node": "^24.0.0",
         "@types/react": "^19.0.0",
@@ -32,6 +32,9 @@
         "tailwindcss": "^3.4.19",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=20"
     },
     "exports": {
         "./src/entry.client": "./client/src/entry.client.528aa4a8.final.mjs",
