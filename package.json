@@ -12,12 +12,12 @@
         "start": "esmx start"
     },
     "dependencies": {
-        "@esmx/core": "3.0.0-rc.92",
+        "@esmx/core": "workspace:*",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"
     },
     "devDependencies": {
-        "@esmx/rspack": "3.0.0-rc.92",
+        "@esmx/rspack": "workspace:*",
         "@rspack/plugin-react-refresh": "^1.5.2",
         "@types/node": "^24.0.0",
         "@types/react": "^19.0.0",
